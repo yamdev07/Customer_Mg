@@ -23,7 +23,7 @@ class StoreClientRequest extends FormRequest
     {
         return [
             'nom_client' => 'required|string|max:255',
-            'contact' => 'required|string|max:20',
+            'contact' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'sites_relais' => 'nullable|string|max:255',
             'lieu' => 'nullable|string|max:255',

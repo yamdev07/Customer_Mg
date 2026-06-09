@@ -96,7 +96,7 @@
                                     <i class="fas fa-money-bill-wave me-2 text-anyxtech"></i>Montant <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group">
-                                    <span class="input-group-text">€</span>
+                                    <span class="input-group-text">FCFA</span>
                                     <input type="number" name="montant" id="montant"
                                            class="form-control @error('montant') is-invalid @enderror"
                                            min="0" value="{{ old('montant') }}" required>
@@ -133,27 +133,17 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('form');
-        form.addEventListener('submit', function(e) {
-            let isValid = true;
-            const requiredFields = this.querySelectorAll('[required]');
+        const submitBtn = form.querySelector('button[type="submit"]');
 
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    field.classList.add('is-invalid');
-                    isValid = false;
-                } else {
-                    field.classList.remove('is-invalid');
-                }
-            });
-
-            if (!isValid) {
-                e.preventDefault();
-                const firstInvalid = this.querySelector('.is-invalid');
-                if (firstInvalid) {
-                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+        // La validation HTML5 (champs « required ») bloque déjà l'envoi si un champ
+        // obligatoire est vide, avec un message natif. Ici on empêche simplement le
+        // double-clic et on indique que l'enregistrement est en cours (fluidité).
+        form.addEventListener('submit', function () {
+            if (submitBtn && !submitBtn.disabled) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enregistrement…';
             }
         });
     });

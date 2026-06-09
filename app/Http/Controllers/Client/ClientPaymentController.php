@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Actions\Client\ProcessClientPaymentAction;
+use App\Actions\Client\ReverseClientPaymentAction;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 
@@ -31,13 +32,16 @@ class ClientPaymentController extends Controller
     }
 
     /**
-     * Déconnecter un client (marquer non payé).
+     * Déconnecter un client : annuler son dernier paiement.
+     *
+     * Le mois réglé le plus récent redevient impayé et la date de réabonnement
+     * recule en conséquence, de sorte que « marquer payé » puisse le régler à nouveau.
      */
-    public function disconnect(Client $client)
+    public function disconnect(Client $client, ReverseClientPaymentAction $reversePayment)
     {
-        $client->update(['a_paye' => false]);
+        $reversePayment->execute($client);
 
         return redirect()->back()
-            ->with('success', 'Client déconnecté avec succès (non payé).');
+            ->with('success', 'Client déconnecté : son dernier paiement a été annulé.');
     }
 }
