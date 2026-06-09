@@ -68,10 +68,10 @@ class ClientNotificationController extends Controller
         $cleaned = preg_replace('/[^0-9]/', '', $number);
 
         if (strlen($cleaned) === 8) {
-            $cleaned = '229' . $cleaned;
+            $cleaned = '229'.$cleaned;
         }
 
-        return '+' . $cleaned;
+        return '+'.$cleaned;
     }
 
     private function formatPhoneNumber(string $number): string
@@ -79,9 +79,9 @@ class ClientNotificationController extends Controller
         $cleaned = preg_replace('/[^0-9]/', '', $number);
 
         if (strlen($cleaned) === 8) {
-            $cleaned = '229' . $cleaned;
+            $cleaned = '229'.$cleaned;
         }
 
-        return '+' . $cleaned;
+        return '+'.$cleaned;
     }
 }

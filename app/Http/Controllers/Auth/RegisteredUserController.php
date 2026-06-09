@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
         $input = $request->only('name', 'first_name', 'phone', 'email', 'password');
 
         // Création du user
-       $user = User::create([
+        $user = User::create([
             'name' => $input['name'],
             'first_name' => $input['first_name'],
             'phone' => $input['phone'],
@@ -50,14 +50,13 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($input['password']),
         ]);
 
-
         // Événement registration
         event(new Registered($user));
 
         // Connexion automatique
         Auth::login($user);
 
-        // Redirection vers dashboard
-        return redirect('/clients');
+        // Redirection vers le dashboard (→ clients actifs)
+        return redirect(route('dashboard', absolute: false));
     }
 }

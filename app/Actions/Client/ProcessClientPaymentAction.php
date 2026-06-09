@@ -15,7 +15,8 @@ class ProcessClientPaymentAction
     {
         $paymentDate = $paymentDate ?? Carbon::today();
 
-        // 1. Récupérer le mois impayé le plus ancien ou créer le paiement courant
+        // 1. Régler le mois impayé le plus ancien s'il existe (rattrapage de dette),
+        //    sinon enregistrer le PROCHAIN mois dû (jamais le mois courant en aveugle).
         $moisImpaye = $client->paiements()
             ->where('statut', false)
             ->orderBy('annee')
@@ -24,24 +25,28 @@ class ProcessClientPaymentAction
 
         if ($moisImpaye) {
             $moisImpaye->update([
-                'statut'        => true,
+                'statut' => true,
                 'date_paiement' => $paymentDate,
             ]);
 
-            $mois  = $moisImpaye->mois;
+            $mois = $moisImpaye->mois;
             $annee = $moisImpaye->annee;
         } else {
-            $mois  = $paymentDate->month;
-            $annee = $paymentDate->year;
+            // Aucun impayé : on règle le mois suivant le dernier payé.
+            $prochain = $client->prochainMoisDu();
+            $mois = $prochain->month;
+            $annee = $prochain->year;
 
-            Paiement::create([
-                'client_id'     => $client->id,
-                'mois'          => $mois,
-                'annee'         => $annee,
-                'statut'        => true,
-                'montant'       => $client->montant,
-                'date_paiement' => $paymentDate,
-            ]);
+            // updateOrCreate = idempotent : pas de violation de la contrainte
+            // unique (client_id, mois, annee) si le paiement existe déjà.
+            $client->paiements()->updateOrCreate(
+                ['mois' => $mois, 'annee' => $annee],
+                [
+                    'statut' => true,
+                    'montant' => $client->montant,
+                    'date_paiement' => $paymentDate,
+                ]
+            );
         }
 
         // 2. Mise à jour de la date de réabonnement
@@ -56,14 +61,20 @@ class ProcessClientPaymentAction
 
     /**
      * Mettre à jour la date de réabonnement selon le jour configuré.
+     *
+     * Un paiement couvre le mois réglé ($annee/$mois) ; la prochaine échéance
+     * de réabonnement tombe donc le MOIS SUIVANT, au jour configuré
+     * (borné au dernier jour du mois pour gérer les mois courts, ex. 31 → févr.).
      */
     private function updateReabonnementDate(Client $client, int $annee, int $mois): void
     {
-        if (!$client->jour_reabonnement) {
+        if (! $client->jour_reabonnement) {
             return;
         }
 
-        $jour = min($client->jour_reabonnement, Carbon::create($annee, $mois, 1)->endOfMonth()->day);
-        $client->date_reabonnement = Carbon::create($annee, $mois, $jour);
+        $prochainMois = Carbon::create($annee, $mois, 1)->addMonth();
+        $jour = min($client->jour_reabonnement, $prochainMois->copy()->endOfMonth()->day);
+
+        $client->date_reabonnement = $prochainMois->setDay($jour);
     }
 }

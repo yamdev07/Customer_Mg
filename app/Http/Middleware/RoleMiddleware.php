@@ -10,8 +10,6 @@ class RoleMiddleware
     /**
      * Gérer l'accès selon le rôle.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @param  string  $role
      * @return mixed
      */
@@ -20,7 +18,7 @@ class RoleMiddleware
         $user = auth()->user();
 
         // Non connecté
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login');
         }
 
@@ -31,7 +29,7 @@ class RoleMiddleware
 
         // Vérifier le rôle spécifique
         if ($user->role !== $role) {
-            abort(403, "Accès refusé.");
+            abort(403, 'Accès refusé.');
         }
 
         return $next($request);

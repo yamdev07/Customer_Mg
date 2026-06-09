@@ -17,7 +17,7 @@ class ClientListController extends Controller
     {
         $this->syncClientsStatus();
 
-        $today       = Carbon::today();
+        $today = Carbon::today();
         $moisCourant = $today->month;
         $anneeCourante = $today->year;
 
@@ -50,13 +50,13 @@ class ClientListController extends Controller
         $today = Carbon::today();
 
         return [
-            'totalClientsCount'             => Client::count(),
-            'payes'                         => Client::payesPourMois($moisCourant, $anneeCourante)->count(),
-            'nonPayes'                      => Client::nonPayesPourMois($moisCourant, $anneeCourante)->count(),
-            'actifs'                        => Client::actifs()->count(),
-            'suspendus'                     => Client::suspendus()->count(),
-            'clientsReabonnementProche'     => Client::reabonnementProche(5)->count(),
-            'clientsReabonnementDepasse'    => Client::reabonnementDepasse()->count(),
+            'totalClientsCount' => Client::count(),
+            'payes' => Client::payesPourMois($moisCourant, $anneeCourante)->count(),
+            'nonPayes' => Client::nonPayesPourMois($moisCourant, $anneeCourante)->count(),
+            'actifs' => Client::actifs()->count(),
+            'suspendus' => Client::suspendus()->count(),
+            'clientsReabonnementProche' => Client::reabonnementProche(5)->count(),
+            'clientsReabonnementDepasse' => Client::reabonnementDepasse()->count(),
         ];
     }
 }

@@ -42,21 +42,21 @@ return [
     */
 
     'whatsapp' => [
-        'token'    => env('WHATSAPP_TOKEN'),
+        'token' => env('WHATSAPP_TOKEN'),
         'phone_id' => env('WHATSAPP_PHONE_ID'),
     ],
 
     'twilio' => [
-        'sid'             => env('TWILIO_SID'),
-        'token'           => env('TWILIO_TOKEN'),
-        'from'            => env('TWILIO_FROM'),
-        'whatsapp_from'   => env('TWILIO_WHATSAPP_FROM'),
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_TOKEN'),
+        'from' => env('TWILIO_FROM'),
+        'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'),
     ],
 
     'infobip' => [
-        'base_url'   => env('INFOBIP_BASE_URL', 'https://api.infobip.com'),
-        'token'      => env('INFOBIP_TOKEN'),
-        'sender'     => env('INFOBIP_SENDER', 'AnyxTech'),
+        'base_url' => env('INFOBIP_BASE_URL', 'https://api.infobip.com'),
+        'token' => env('INFOBIP_TOKEN'),
+        'sender' => env('INFOBIP_SENDER', 'AnyxTech'),
     ],
 
 ];

@@ -1,3 +1,404 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ==========================================================================
+   AnyxTech — Design System
+   Charte graphique issue du logo : bleu marine, bleu vif, cyan.
+   Ce fichier centralise tout le style de l'application (refonte 2026).
+   Chargé APRÈS Bootstrap → nos règles priment.
+   ========================================================================== */
+
+:root {
+    /* Couleurs de marque (logo) */
+    --ax-navy:      #1e3a8a;   /* ANY — bleu marine profond */
+    --ax-navy-700:  #1b3578;
+    --ax-navy-900:  #122257;
+    --ax-blue:      #3b82f6;   /* bleu vif */
+    --ax-cyan:      #06b6d4;   /* cyan accent */
+    --ax-cyan-400:  #22d3ee;   /* cyan lumineux */
+    --ax-light:     #e0f2fe;   /* cyan très clair (fonds doux) */
+
+    /* Alias utilisés historiquement dans les vues */
+    --anyxtech-primary:    var(--ax-navy);
+    --anyxtech-secondary:  var(--ax-blue);
+    --anyxtech-accent:     var(--ax-cyan);
+    --anyxtech-light:      var(--ax-light);
+    --anyxtech-dark:       #1e293b;
+    --anyxtech-three-blue: #0b1f4d;   /* fond du footer */
+
+    /* Neutres / surface */
+    --ax-bg:        #f4f7fb;   /* fond général de l'app */
+    --ax-surface:   #ffffff;
+    --ax-border:    #e6ecf4;
+    --ax-text:      #1e293b;
+    --ax-muted:     #64748b;
+
+    /* Statuts */
+    --ax-success:   #16a34a;
+    --ax-danger:    #dc2626;
+    --ax-warning:   #d97706;
+    --ax-info:      #0891b2;
+
+    /* Dégradé signature (X du logo : marine → bleu → cyan) */
+    --ax-gradient:  linear-gradient(135deg, var(--ax-navy) 0%, var(--ax-blue) 55%, var(--ax-cyan) 100%);
+
+    /* Ombres */
+    --ax-shadow-sm: 0 1px 2px rgba(15, 23, 42, .06), 0 1px 3px rgba(15, 23, 42, .05);
+    --ax-shadow:    0 6px 18px rgba(30, 58, 138, .08);
+    --ax-shadow-lg: 0 18px 40px rgba(30, 58, 138, .14);
+
+    /* Layout */
+    --ax-sidebar-w: 264px;
+    --ax-radius:    16px;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+body {
+    background-color: var(--ax-bg);
+    color: var(--ax-text);
+    font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+::selection { background: var(--ax-light); color: var(--ax-navy); }
+
+/* Scrollbar discrète */
+* { scrollbar-width: thin; scrollbar-color: #c7d4e6 transparent; }
+*::-webkit-scrollbar { width: 9px; height: 9px; }
+*::-webkit-scrollbar-thumb { background: #c7d4e6; border-radius: 999px; }
+*::-webkit-scrollbar-thumb:hover { background: #aebfda; }
+
+/* --------------------------------------------------------------------------
+   Shell applicatif : Sidebar + contenu
+   -------------------------------------------------------------------------- */
+.app-shell { min-height: 100vh; }
+
+.app-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: var(--ax-sidebar-w);
+    background: var(--ax-surface);
+    border-right: 1px solid var(--ax-border);
+    display: flex;
+    flex-direction: column;
+    z-index: 60;
+    transition: transform .28s cubic-bezier(.4, 0, .2, 1);
+}
+
+.app-sidebar__brand {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    padding: 1.25rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--ax-border);
+}
+.app-sidebar__brand img { height: 38px; width: auto; }
+
+.app-sidebar__nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem .75rem;
+}
+.app-sidebar__label {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--ax-muted);
+    padding: 0 .75rem;
+    margin: .25rem 0 .6rem;
+}
+
+.app-sidebar__foot {
+    border-top: 1px solid var(--ax-border);
+    padding: .85rem .9rem;
+}
+
+/* Liens de navigation */
+.side-link {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+    padding: .7rem .85rem;
+    margin-bottom: .2rem;
+    border-radius: 12px;
+    color: #475569;
+    font-weight: 500;
+    font-size: .96rem;
+    text-decoration: none;
+    transition: all .18s ease;
+    position: relative;
+}
+.side-link i { width: 1.4rem; text-align: center; font-size: 1.02rem; color: #94a3b8; transition: color .18s ease; }
+.side-link:hover { background: var(--ax-light); color: var(--ax-navy); }
+.side-link:hover i { color: var(--ax-blue); }
+.side-link.active {
+    background: var(--ax-gradient);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(30, 58, 138, .28);
+}
+.side-link.active i { color: #fff; }
+.side-link .side-link__badge {
+    margin-left: auto;
+    font-size: .72rem;
+    font-weight: 700;
+    background: rgba(148, 163, 184, .18);
+    color: #475569;
+    padding: .1rem .5rem;
+    border-radius: 999px;
+}
+.side-link.active .side-link__badge { background: rgba(255, 255, 255, .25); color: #fff; }
+
+/* Bloc utilisateur dans la sidebar */
+.side-user { display: flex; align-items: center; gap: .7rem; padding: .35rem .4rem .7rem; }
+.side-user__avatar {
+    width: 40px; height: 40px; flex: 0 0 40px;
+    border-radius: 12px;
+    background: var(--ax-gradient);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+}
+.side-user__name { font-weight: 600; font-size: .9rem; line-height: 1.1; color: var(--ax-text); }
+.side-user__mail { font-size: .76rem; color: var(--ax-muted); }
+
+/* Zone de contenu */
+.app-content {
+    margin-left: var(--ax-sidebar-w);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Barre supérieure */
+.app-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: .85rem 1.5rem;
+    background: rgba(255, 255, 255, .82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--ax-border);
+}
+.app-topbar__title { font-weight: 700; font-size: 1.05rem; color: var(--ax-navy); }
+.app-topbar__sub   { font-size: .8rem; color: var(--ax-muted); }
+
+.app-burger {
+    display: none;
+    width: 42px; height: 42px;
+    border: 1px solid var(--ax-border);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ax-navy);
+    align-items: center; justify-content: center;
+    font-size: 1.1rem;
+}
+
+.app-main { flex: 1; }
+
+/* Overlay mobile */
+.app-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 23, 42, .45);
+    z-index: 55;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive : sidebar coulissante
+   -------------------------------------------------------------------------- */
+@media (max-width: 1023.98px) {
+    .app-content { margin-left: 0; }
+    .app-sidebar { transform: translateX(-100%); box-shadow: var(--ax-shadow-lg); }
+    .app-sidebar.is-open { transform: translateX(0); }
+    .app-burger { display: inline-flex; }
+}
+
+/* ==========================================================================
+   Surcharges Bootstrap → identité AnyxTech
+   ========================================================================== */
+
+/* Cartes */
+.card {
+    border: 1px solid var(--ax-border);
+    border-radius: var(--ax-radius);
+    box-shadow: var(--ax-shadow-sm);
+    background: var(--ax-surface);
+}
+.card-hover { transition: transform .25s ease, box-shadow .25s ease; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: var(--ax-shadow-lg); }
+
+/* Couleurs de marque (classes utilisées dans les vues) */
+.bg-anyxtech        { background-color: var(--ax-navy) !important; }
+.text-anyxtech      { color: var(--ax-navy) !important; }
+.bg-anyxtech-light  { background-color: var(--ax-light) !important; }
+.bg-gradient-anyxtech { background: var(--ax-gradient) !important; }
+
+.text-success-600 { color: var(--ax-success) !important; }
+.text-danger-600  { color: var(--ax-danger)  !important; }
+.text-warning-600 { color: var(--ax-warning) !important; }
+.text-info-600    { color: var(--ax-info)    !important; }
+
+.bg-success-light { background-color: rgba(22, 163, 74, .12)  !important; }
+.bg-danger-light  { background-color: rgba(220, 38, 38, .12)  !important; }
+.bg-warning-light { background-color: rgba(217, 119, 6, .12)  !important; }
+.bg-info-light    { background-color: rgba(8, 145, 178, .12)  !important; }
+
+/* Boutons */
+.btn { border-radius: 11px; font-weight: 600; transition: all .2s ease; }
+.btn-anyxtech {
+    background: var(--ax-gradient);
+    border: none;
+    color: #fff;
+}
+.btn-anyxtech:hover, .btn-anyxtech:focus {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(30, 58, 138, .3);
+}
+.btn-outline-anyxtech {
+    border: 1.5px solid var(--ax-blue);
+    color: var(--ax-navy);
+    background: #fff;
+}
+.btn-outline-anyxtech:hover { background: var(--ax-light); color: var(--ax-navy); }
+
+/* Tableaux */
+.table { margin-bottom: 0; color: var(--ax-text); }
+.table > :not(caption) > * > * { padding: .9rem .85rem; }
+.table thead th {
+    border: none;
+    font-size: .74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+.table.thead-anyxtech thead th,
+.table thead.bg-anyxtech th {
+    background: var(--ax-gradient);
+    color: #fff;
+}
+.table tbody td { border: none; vertical-align: middle; }
+.table tbody tr { border-bottom: 1px solid var(--ax-border); transition: background .15s ease; }
+.table-hover tbody tr:hover { background-color: rgba(59, 130, 246, .05); }
+
+/* Badges de statut */
+.badge { font-weight: 600; letter-spacing: .01em; border-radius: 999px; padding: .42em .8em; }
+
+/* Champs de formulaire */
+.form-control, .form-select {
+    border-radius: 11px;
+    border: 1px solid var(--ax-border);
+    padding: .6rem .9rem;
+    background-color: #fff;
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--ax-blue);
+    box-shadow: 0 0 0 .22rem rgba(59, 130, 246, .18);
+}
+.form-control-lg { padding: .75rem 1rem; }
+
+/* Modales */
+.modal-content { border: none; border-radius: 20px; overflow: hidden; box-shadow: var(--ax-shadow-lg); }
+
+/* Barres de progression */
+.progress { border-radius: 999px; background-color: #eef2f8; height: 7px; }
+.progress-bar { border-radius: 999px; }
+
+/* Pagination */
+.pagination { gap: .25rem; }
+.page-item .page-link {
+    border-radius: 10px;
+    border: 1px solid var(--ax-border);
+    color: var(--ax-navy);
+    transition: all .2s ease;
+    margin: 0;
+}
+.page-item .page-link:hover { background: var(--ax-light); border-color: var(--ax-blue); color: var(--ax-navy); }
+.page-item.active .page-link {
+    background: var(--ax-gradient);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(30, 58, 138, .22);
+}
+
+/* En-tête de page (bandeau dégradé) */
+.page-hero {
+    background: var(--ax-gradient);
+    border-radius: 20px;
+    color: #fff;
+    padding: 1.6rem 1.8rem;
+    box-shadow: var(--ax-shadow);
+    position: relative;
+    overflow: hidden;
+}
+.page-hero::after {
+    content: "";
+    position: absolute;
+    right: -40px; top: -60px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(255, 255, 255, .18), transparent 70%);
+    border-radius: 50%;
+}
+
+/* Pastille statistique (icône ronde) */
+.stat-ico {
+    width: 56px; height: 56px;
+    border-radius: 15px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.35rem;
+    flex: 0 0 56px;
+}
+
+/* Animations utilitaires */
+@keyframes axFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.ax-fade-up { animation: axFadeUp .4s ease both; }
+
+/* --------------------------------------------------------------------------
+   Notifications globales (toasts)
+   -------------------------------------------------------------------------- */
+.ax-toasts {
+    position: fixed;
+    top: 1rem; right: 1rem;
+    z-index: 1080;
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+    width: min(380px, calc(100vw - 2rem));
+}
+.ax-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+    padding: .9rem 1rem;
+    border-radius: 14px;
+    background: var(--ax-surface);
+    border: 1px solid var(--ax-border);
+    border-left: 4px solid var(--ax-muted);
+    box-shadow: var(--ax-shadow-lg);
+    color: var(--ax-text);
+    font-size: .92rem;
+}
+.ax-toast > i { font-size: 1.1rem; margin-top: .1rem; }
+.ax-toast__body { flex: 1; min-width: 0; }
+.ax-toast__body strong { display: block; margin-bottom: .15rem; }
+.ax-toast__body ul { margin: .2rem 0 0; padding-left: 1.1rem; }
+.ax-toast__close {
+    background: none; border: none; cursor: pointer;
+    color: var(--ax-muted); font-size: 1.2rem; line-height: 1;
+    padding: 0; margin-left: .25rem;
+}
+.ax-toast__close:hover { color: var(--ax-text); }
+
+.ax-toast--success { border-left-color: var(--ax-success); }
+.ax-toast--success > i { color: var(--ax-success); }
+.ax-toast--danger  { border-left-color: var(--ax-danger); }
+.ax-toast--danger  > i { color: var(--ax-danger); }
+.ax-toast--warning { border-left-color: var(--ax-warning); }
+.ax-toast--warning > i { color: var(--ax-warning); }
+.ax-toast--info    { border-left-color: var(--ax-info); }
+.ax-toast--info    > i { color: var(--ax-info); }

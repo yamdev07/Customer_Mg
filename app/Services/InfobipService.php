@@ -10,14 +10,16 @@ use Illuminate\Support\Str;
 class InfobipService implements MessagingServiceInterface
 {
     protected string $baseUrl;
+
     protected string $token;
+
     protected string $sender;
 
     public function __construct()
     {
         $this->baseUrl = config('services.infobip.base_url', '');
-        $this->token   = config('services.infobip.token', '');
-        $this->sender  = config('services.infobip.sender', '');
+        $this->token = config('services.infobip.token', '');
+        $this->sender = config('services.infobip.sender', '');
     }
 
     /**
@@ -29,15 +31,15 @@ class InfobipService implements MessagingServiceInterface
             $to = $this->formatPhoneNumber($to);
 
             $response = Http::withHeaders([
-                'Authorization' => 'App ' . $this->token,
-                'Content-Type'  => 'application/json',
-                'Accept'        => 'application/json',
+                'Authorization' => 'App '.$this->token,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
             ])->post("{$this->baseUrl}/sms/2/text/advanced", [
                 'messages' => [
                     [
-                        'from'         => $this->sender,
+                        'from' => $this->sender,
                         'destinations' => [['to' => $to]],
-                        'text'         => $message,
+                        'text' => $message,
                     ],
                 ],
             ]);
@@ -45,14 +47,14 @@ class InfobipService implements MessagingServiceInterface
             if ($response->successful()) {
                 return [
                     'success' => true,
-                    'sid'     => data_get($response->json(), 'messages.0.messageId'),
+                    'sid' => data_get($response->json(), 'messages.0.messageId'),
                     'message' => 'SMS envoyé avec succès',
                 ];
             }
 
             return [
                 'success' => false,
-                'error'   => $response->json()['description'] ?? 'Erreur inconnue',
+                'error' => $response->json()['description'] ?? 'Erreur inconnue',
             ];
         } catch (\Exception $e) {
             Log::error('Infobip SMS error', ['to' => $to, 'error' => $e->getMessage()]);
@@ -70,26 +72,26 @@ class InfobipService implements MessagingServiceInterface
             $to = $this->formatWhatsAppNumber($to);
 
             $response = Http::withHeaders([
-                'Authorization' => 'App ' . $this->token,
-                'Content-Type'  => 'application/json',
-                'Accept'        => 'application/json',
+                'Authorization' => 'App '.$this->token,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
             ])->post("{$this->baseUrl}/whatsapp/1/message/text", [
-                'from'   => $this->sender,
-                'to'     => $to,
-                'text'   => $message,
+                'from' => $this->sender,
+                'to' => $to,
+                'text' => $message,
             ]);
 
             if ($response->successful()) {
                 return [
                     'success' => true,
-                    'sid'     => data_get($response->json(), 'messages.0.messageId'),
+                    'sid' => data_get($response->json(), 'messages.0.messageId'),
                     'message' => 'WhatsApp envoyé avec succès',
                 ];
             }
 
             return [
                 'success' => false,
-                'error'   => $response->json()['description'] ?? 'Erreur inconnue',
+                'error' => $response->json()['description'] ?? 'Erreur inconnue',
             ];
         } catch (\Exception $e) {
             Log::error('Infobip WhatsApp error', ['to' => $to, 'error' => $e->getMessage()]);
@@ -106,8 +108,8 @@ class InfobipService implements MessagingServiceInterface
         $payload = [
             'messages' => [
                 [
-                    'from'    => $this->sender,
-                    'to'      => $this->formatWhatsAppNumber($to),
+                    'from' => $this->sender,
+                    'to' => $this->formatWhatsAppNumber($to),
                     'messageId' => Str::uuid()->toString(),
                     'content' => [
                         'templateName' => $templateName,
@@ -123,9 +125,9 @@ class InfobipService implements MessagingServiceInterface
         ];
 
         $response = Http::withHeaders([
-            'Authorization' => 'App ' . $this->token,
-            'Content-Type'  => 'application/json',
-            'Accept'        => 'application/json',
+            'Authorization' => 'App '.$this->token,
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
         ])->post("{$this->baseUrl}/whatsapp/1/message/template", $payload);
 
         return $response->successful();
@@ -138,14 +140,14 @@ class InfobipService implements MessagingServiceInterface
     {
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'App ' . $this->token,
-                'Accept'        => 'application/json',
+                'Authorization' => 'App '.$this->token,
+                'Accept' => 'application/json',
             ])->get("{$this->baseUrl}/whatsapp/1/message/{$messageSid}");
 
             if ($response->successful()) {
                 return [
                     'success' => true,
-                    'status'  => data_get($response->json(), 'results.0.status'),
+                    'status' => data_get($response->json(), 'results.0.status'),
                 ];
             }
 
@@ -164,11 +166,11 @@ class InfobipService implements MessagingServiceInterface
         $number = preg_replace('/[^0-9]/', '', $number);
 
         if (strlen($number) === 8) {
-            $number = '+229' . $number;
+            $number = '+229'.$number;
         } elseif (strlen($number) === 11 && str_starts_with($number, '229')) {
-            $number = '+' . $number;
-        } elseif (!str_starts_with($number, '+')) {
-            $number = '+' . $number;
+            $number = '+'.$number;
+        } elseif (! str_starts_with($number, '+')) {
+            $number = '+'.$number;
         }
 
         return $number;
@@ -178,6 +180,6 @@ class InfobipService implements MessagingServiceInterface
     {
         $formatted = $this->formatPhoneNumber($number);
 
-        return str_starts_with($formatted, 'whatsapp:') ? $formatted : 'whatsapp:' . $formatted;
+        return str_starts_with($formatted, 'whatsapp:') ? $formatted : 'whatsapp:'.$formatted;
     }
 }

@@ -16,8 +16,8 @@ Route::get('/', fn () => view('welcome'));
 // ── Routes protégées par auth ──
 Route::middleware(['auth'])->group(function () {
 
-    // Dashboard → redirection vers liste clients
-    Route::get('/dashboard', fn () => redirect()->route('clients.index'))->name('dashboard');
+    // Dashboard → on arrive directement sur les clients actifs
+    Route::get('/dashboard', fn () => redirect()->route('clients.actifs'))->name('dashboard');
 
     // ──────────────────────────────────────────────
     //  Clients — Commercial & Admin (lecture + ajout)
@@ -26,9 +26,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/clients', ClientListController::class)->name('clients.index');
         Route::get('/clients/create', [ClientCrudController::class, 'create'])->name('clients.create');
         Route::post('/clients', [ClientCrudController::class, 'store'])->name('clients.store');
-        Route::get('/clients/{client}', [ClientCrudController::class, 'show'])->name('clients.show');
 
-        // Listes filtrées
+        // Listes filtrées — DOIVENT être déclarées AVANT la route générique
+        // /clients/{client}, sinon « payes », « actifs »… sont pris pour un id.
         Route::prefix('clients')->name('clients.')->group(function () {
             Route::get('/payes', [ClientFilteredListsController::class, 'payes'])->name('payes');
             Route::get('/nonpayes', [ClientFilteredListsController::class, 'nonPayes'])->name('nonpayes');
@@ -37,6 +37,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/reabonnement', [ClientFilteredListsController::class, 'aReabonnement'])->name('reabonnement');
             Route::get('/depasses', [ClientFilteredListsController::class, 'depasses'])->name('depasses');
         });
+
+        // Route générique en dernier (capture-tout sur un id de client)
+        Route::get('/clients/{client}', [ClientCrudController::class, 'show'])->name('clients.show');
     });
 
     // ──────────────────────────────────────────────

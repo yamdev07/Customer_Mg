@@ -2,13 +2,14 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Client;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class MajDatesReabonnementCommand extends Command
 {
     protected $signature = 'clients:mettre-a-jour-reabonnement';
+
     protected $description = 'Met à jour automatiquement les dates de réabonnement chaque mois';
 
     public function handle()
@@ -37,6 +38,7 @@ class MajDatesReabonnementCommand extends Command
         }
 
         $this->info("Mise à jour terminée : $total clients mis à jour.");
+
         return 0;
     }
 }

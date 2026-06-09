@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Client;
 
 use App\Actions\Client\CalculateReabonnementDateAction;
-use App\Actions\Client\ProcessClientPaymentAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;

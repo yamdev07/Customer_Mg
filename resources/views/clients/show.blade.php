@@ -1,194 +1,144 @@
-@extends('layouts.app') {{-- Assurez-vous que votre layout principal est correctement défini et contient les scripts Bootstrap et Font Awesome --}}
+@extends('layouts.app')
 
 @section('title', 'Détails du client: ' . ($client->nom_client ?? 'N/A'))
 
 @section('content')
-<div class="container-fluid px-4 py-5">
-    {{-- Header de la page de détails --}}
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="bg-gradient-anyxtech rounded-4 p-4 text-white shadow-lg d-flex justify-content-between align-items-center flex-wrap">
-                <div>
-                    <h1 class="display-6 fw-bold mb-2">
-                        <i class="fas fa-user-circle me-3"></i>
-                        Détails du Client: {{ $client->nom_client ?? 'N/A' }}
-                    </h1>
-                    <p class="lead mb-0 opacity-90">Informations complètes sur l'abonnement</p>
-                </div>
-                <div class="text-end mt-3 mt-md-0">
-                    <a href="{{ route('clients.index') }}" class="btn btn-light btn-lg px-4 py-2 shadow-sm rounded-pill">
-                        <i class="fas fa-arrow-left me-2"></i>
-                        Retour à la liste
-                    </a>
-                </div>
+<div class="container-fluid px-3 px-md-4 py-4">
+
+    {{-- Bandeau --}}
+    <div class="page-hero mb-4 ax-fade-up">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 position-relative" style="z-index:1">
+            <div>
+                <h1 class="h3 fw-bold mb-1"><i class="fas fa-user-circle me-2"></i>{{ $client->nom_client ?? 'N/A' }}</h1>
+                <p class="mb-0 opacity-75">Informations complètes sur l'abonnement</p>
             </div>
+            <a href="{{ route('clients.index') }}" class="btn btn-light fw-semibold">
+                <i class="fas fa-arrow-left me-2 text-anyxtech"></i>Retour
+            </a>
         </div>
     </div>
 
-    {{-- Carte des informations générales du client --}}
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-        <div class="card-header bg-white border-bottom-0 p-4">
-            <h5 class="mb-0 text-dark fw-semibold">
-                <i class="fas fa-info-circle me-2 text-anyxtech"></i>
-                Informations Générales
-            </h5>
+    {{-- Informations générales --}}
+    <div class="card mb-4">
+        <div class="card-header bg-white border-0 p-3 p-md-4">
+            <h5 class="mb-0 fw-semibold"><i class="fas fa-info-circle me-2 text-anyxtech"></i>Informations générales</h5>
         </div>
-        <div class="card-body p-4">
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Nom du Client</small>
-                        <p class="fw-semibold fs-5 text-dark mb-0">{{ $client->nom_client ?? 'Non spécifié' }}</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Contact</small>
-                        <p class="fw-semibold fs-5 text-dark mb-0">{{ $client->contact ?? 'Non spécifié' }}</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Email</small>
-                        <p class="fw-semibold fs-5 text-dark mb-0">{{ $client->email ?? 'N/A' }}</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Site Relais</small>
-                        <p class="fw-semibold fs-5 text-dark mb-0">{{ $client->site_relais ?? 'N/A' }}</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Catégorie</small>
-                        <p class="fw-semibold fs-5 text-dark mb-0">{{ $client->categorie ?? 'Non classé' }}</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Statut Actuel</small>
-                        @if ($client->statut == 'actif')
-                            <span class="badge bg-success-subtle text-success fs-6 py-2 px-3 rounded-pill">Actif</span>
-                        @elseif ($client->statut == 'suspendu')
-                            <span class="badge bg-warning-subtle text-warning fs-6 py-2 px-3 rounded-pill">Suspendu</span>
-                        @else
-                            <span class="badge bg-secondary-subtle text-secondary fs-6 py-2 px-3 rounded-pill">{{ $client->statut ?? 'Inconnu' }}</span>
+        <div class="card-body p-3 p-md-4">
+            <dl class="row mb-0">
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2">Nom du client</dt>
+                <dd class="col-sm-8 fw-semibold text-dark py-2">{{ $client->nom_client ?? 'Non spécifié' }}</dd>
+
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Contact</dt>
+                <dd class="col-sm-8 fw-semibold text-dark py-2 border-top">{{ $client->contact ?? 'Non spécifié' }}</dd>
+
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Email</dt>
+                <dd class="col-sm-8 fw-semibold text-dark py-2 border-top">{{ $client->email ?? 'N/A' }}</dd>
+
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Site relais</dt>
+                <dd class="col-sm-8 fw-semibold text-dark py-2 border-top">{{ $client->sites_relais ?? 'N/A' }}</dd>
+
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Catégorie</dt>
+                <dd class="col-sm-8 fw-semibold text-dark py-2 border-top">{{ $client->categorie ?? 'Non classé' }}</dd>
+
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Statut actuel</dt>
+                <dd class="col-sm-8 py-2 border-top">
+                    @if ($client->statut == 'actif')
+                        <span class="badge bg-success-light text-success-600"><i class="fas fa-check-circle me-1"></i>Actif</span>
+                    @elseif ($client->statut == 'suspendu')
+                        <span class="badge bg-warning-light text-warning-600"><i class="fas fa-pause-circle me-1"></i>Suspendu</span>
+                    @else
+                        <span class="badge bg-anyxtech-light text-anyxtech">{{ $client->statut ?? 'Inconnu' }}</span>
+                    @endif
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    {{-- Abonnement et paiement --}}
+    <div class="card mb-4">
+        <div class="card-header bg-white border-0 p-3 p-md-4">
+            <h5 class="mb-0 fw-semibold"><i class="fas fa-calendar-alt me-2 text-anyxtech"></i>Abonnement et paiement</h5>
+        </div>
+        <div class="card-body p-3 p-md-4">
+            <dl class="row mb-0">
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2">Jour de réabonnement</dt>
+                <dd class="col-sm-8 fw-semibold text-dark py-2">{{ $client->jour_reabonnement ?? 'Non défini' }}</dd>
+
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Date de réabonnement</dt>
+                <dd class="col-sm-8 fw-semibold text-dark py-2 border-top">
+                    @if ($client->date_reabonnement)
+                        {{ \Carbon\Carbon::parse($client->date_reabonnement)->format('d F Y') }}
+                        @if (\Carbon\Carbon::parse($client->date_reabonnement)->isPast() && !$client->a_paye)
+                            <span class="badge bg-danger-light text-danger-600 ms-2">Expiré</span>
+                        @elseif (\Carbon\Carbon::parse($client->date_reabonnement)->diffInDays(now()) <= 7 && !$client->a_paye)
+                            <span class="badge bg-warning-light text-warning-600 ms-2">Bientôt</span>
                         @endif
-                    </div>
-                </div>
-            </div>
+                    @else
+                        Non défini
+                    @endif
+                </dd>
+
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Montant de l'abonnement</dt>
+                <dd class="col-sm-8 text-anyxtech fw-semibold py-2 border-top">{{ number_format($client->montant ?? 0, 0, ',', ' ') }} FCFA</dd>
+
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Statut de paiement</dt>
+                <dd class="col-sm-8 py-2 border-top">
+                    @if ($client->a_paye)
+                        <span class="badge bg-success-light text-success-600"><i class="fas fa-check-circle me-1"></i>Payé</span>
+                    @else
+                        <span class="badge bg-danger-light text-danger-600"><i class="fas fa-exclamation-circle me-1"></i>Non payé</span>
+                    @endif
+                </dd>
+
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Date d'ajout</dt>
+                <dd class="col-sm-8 fw-semibold text-dark py-2 border-top">
+                    {{ $client->created_at ? \Carbon\Carbon::parse($client->created_at)->format('d F Y H:i') : 'N/A' }}
+                </dd>
+
+                <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Dernière mise à jour</dt>
+                <dd class="col-sm-8 fw-semibold text-dark py-2 border-top">
+                    {{ $client->updated_at ? \Carbon\Carbon::parse($client->updated_at)->format('d F Y H:i') : 'N/A' }}
+                </dd>
+            </dl>
         </div>
     </div>
 
-    {{-- Carte des informations d'abonnement et de paiement --}}
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-        <div class="card-header bg-white border-bottom-0 p-4">
-            <h5 class="mb-0 text-dark fw-semibold">
-                <i class="fas fa-calendar-alt me-2 text-anyxtech"></i>
-                Informations d'Abonnement et Paiement
-            </h5>
+    {{-- Actions rapides --}}
+    <div class="card mb-4">
+        <div class="card-header bg-white border-0 p-3 p-md-4">
+            <h5 class="mb-0 fw-semibold"><i class="fas fa-cogs me-2 text-anyxtech"></i>Actions rapides</h5>
         </div>
-        <div class="card-body p-4">
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Jour de Réabonnement</small>
-                        <p class="fw-semibold fs-5 text-dark mb-0">{{ $client->jour_reabonnement ?? 'Non défini' }}</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Date de Réabonnement</small>
-                        <p class="fw-semibold fs-5 text-dark mb-0">
-                            @if ($client->date_reabonnement)
-                                {{ \Carbon\Carbon::parse($client->date_reabonnement)->format('d F Y') }}
-                                @if (\Carbon\Carbon::parse($client->date_reabonnement)->isPast() && !$client->a_paye)
-                                    <span class="badge bg-danger ms-2">Expiré</span>
-                                @elseif (\Carbon\Carbon::parse($client->date_reabonnement)->diffInDays(now()) <= 7 && !$client->a_paye)
-                                    <span class="badge bg-warning ms-2">Bientôt</span>
-                                @endif
-                            @else
-                                Non défini
-                            @endif
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Montant de l'abonnement</small>
-                        <p class="fw-semibold fs-5 text-anyxtech mb-0">{{ number_format($client->montant ?? 0, 0, ',', ' ') }} FCFA</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Statut de Paiement</small>
-                        @if ($client->a_paye)
-                            <span class="badge bg-success-subtle text-success fs-6 py-2 px-3 rounded-pill">Payé</span>
-                        @else
-                            <span class="badge bg-danger-subtle text-danger fs-6 py-2 px-3 rounded-pill">Non Payé</span>
-                        @endif
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Date d'ajout</small>
-                        <p class="fw-semibold fs-5 text-dark mb-0">
-                            {{ $client->created_at ? \Carbon\Carbon::parse($client->created_at)->format('d F Y H:i') : 'N/A' }}
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="detail-item">
-                        <small class="text-muted text-uppercase fw-bold d-block mb-1">Dernière mise à jour</small>
-                        <p class="fw-semibold fs-5 text-dark mb-0">
-                            {{ $client->updated_at ? \Carbon\Carbon::parse($client->updated_at)->format('d F Y H:i') : 'N/A' }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Actions Spécifiques au Client --}}
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-        <div class="card-header bg-white border-bottom-0 p-4">
-            <h5 class="mb-0 text-dark fw-semibold">
-                <i class="fas fa-cogs me-2 text-anyxtech"></i>
-                Actions rapides
-            </h5>
-        </div>
-        <div class="card-body p-4">
+        <div class="card-body p-3 p-md-4">
             <div class="d-flex flex-wrap gap-3">
                 @if ($client->a_paye == 0)
                     <form action="{{ route('clients.reconnecter', $client->id) }}" method="POST">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="btn btn-success px-4 py-2 shadow-sm rounded-pill">
-                            <i class="fas fa-plug me-2"></i> Reconnecter (Marquer Payé)
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="fas fa-plug me-2"></i> Reconnecter (Marquer payé)
                         </button>
                     </form>
                 @else
                     <form action="{{ route('clients.deconnecter', $client->id) }}" method="POST">
                         @csrf
                         {{-- Laravel n'accepte pas PATCH/PUT avec un formulaire HTML simple si ce n'est pas _method, donc POST est ok pour deconnecter si c'est ce que vous aviez --}}
-                        <button type="submit" class="btn btn-warning px-4 py-2 shadow-sm rounded-pill">
-                            <i class="fas fa-plug-off me-2"></i> Déconnecter (Marquer Non Payé)
-                        </button>
-                    </form>
-                @endif
-                
-                @if ($client->statut == 'actif')
-                    <form action="{{ route('clients.suspendre', $client->id) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="btn btn-danger px-4 py-2 shadow-sm rounded-pill">
-                            <i class="fas fa-pause me-2"></i> Suspendre le Client
+                        <button type="submit" class="btn btn-warning px-4">
+                            <i class="fas fa-plug-circle-xmark me-2"></i> Déconnecter (Marquer non payé)
                         </button>
                     </form>
                 @endif
 
-               @php
+                @if ($client->statut == 'actif')
+                    <form action="{{ route('clients.suspendre', $client->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="fas fa-pause me-2"></i> Suspendre le client
+                        </button>
+                    </form>
+                @endif
+
+                @php
                     // Nettoyer le numéro et ajouter l'indicatif (ici +229 pour Bénin, adapte si besoin)
                     $numero = preg_replace('/[^0-9]/', '', $client->contact);
                     if (strlen($numero) === 8) {
@@ -200,142 +150,26 @@
                     $messageEncoded = urlencode($message);
                 @endphp
 
-                <a href="https://wa.me/{{ $numero }}?text={{ $messageEncoded }}" target="_blank" class="btn btn-success px-4 py-2 shadow-sm rounded-pill">
+                <a href="https://wa.me/{{ $numero }}?text={{ $messageEncoded }}" target="_blank" class="btn btn-success px-4">
                     <i class="fab fa-whatsapp me-2"></i> Relancer par WhatsApp
                 </a>
-
             </div>
         </div>
     </div>
 
-
     {{-- Boutons d'action principaux --}}
-    <div class="d-flex justify-content-end gap-3 mt-5">
-        <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-anyxtech btn-lg px-4 py-2 shadow-sm">
-            <i class="fas fa-edit me-2"></i>
-            Modifier le Client
+    <div class="d-flex flex-column flex-sm-row justify-content-end gap-3">
+        <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-anyxtech btn-lg px-4">
+            <i class="fas fa-edit me-2"></i>Modifier le client
         </a>
         <form action="{{ route('clients.destroy', $client->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce client ? Cette action est irréversible.');">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn btn-outline-danger btn-lg px-4 py-2 shadow-sm">
-                <i class="fas fa-trash-alt me-2"></i>
-                Supprimer le Client
+            <button type="submit" class="btn btn-danger btn-lg px-4">
+                <i class="fas fa-trash-alt me-2"></i>Supprimer le client
             </button>
         </form>
     </div>
 
 </div>
-
-{{-- Inclure le CSS personnalisé AnyxTech (copier/coller depuis votre index.blade.php) --}}
-<style>
-    :root {
-        --anyxtech-primary: #1e3a8a;
-        --anyxtech-secondary: #3b82f6;
-        --anyxtech-accent: #06b6d4;
-        --anyxtech-light: #e0f2fe;
-        --anyxtech-dark: #1e293b;
-    }
-
-    .bg-gradient-anyxtech {
-        background: linear-gradient(135deg, var(--anyxtech-primary) 0%, var(--anyxtech-secondary) 50%, var(--anyxtech-accent) 100%);
-    }
-
-    .bg-anyxtech {
-        background-color: var(--anyxtech-primary) !important;
-    }
-
-    .text-anyxtech {
-        color: var(--anyxtech-primary) !important;
-    }
-
-    .btn-anyxtech {
-        background: linear-gradient(135deg, var(--anyxtech-primary), var(--anyxtech-secondary));
-        border: none;
-        color: white;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        font-weight: 600;
-    }
-
-    .btn-anyxtech:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
-        color: white;
-    }
-
-    .card-hover {
-        transition: all 0.3s ease;
-        border-radius: 16px;
-    }
-
-    .card-hover:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    }
-
-    .bg-anyxtech-light {
-        background-color: var(--anyxtech-light) !important;
-    }
-
-    .bg-success-light {
-        background-color: rgba(25, 135, 84, 0.1) !important;
-    }
-
-    .bg-danger-light {
-        background-color: rgba(220, 53, 69, 0.1) !important;
-    }
-
-    .bg-warning-light {
-        background-color: rgba(255, 193, 7, 0.1) !important;
-    }
-
-    .detail-item {
-        background-color: #f8f9fa; /* Light grey background for detail sections */
-        border-radius: 10px;
-        padding: 1rem;
-        border: 1px solid #e9ecef;
-        height: 100%; /* Ensure all detail items have consistent height */
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .detail-item p {
-        word-wrap: break-word; /* Ensure long text wraps */
-        margin-bottom: 0; /* Remove extra margin */
-    }
-
-    /* Badges avec des couleurs subtiles */
-    .badge-success-subtle {
-        background-color: #d1e7dd;
-        color: #0f5132;
-    }
-
-    .badge-danger-subtle {
-        background-color: #f8d7da;
-        color: #842029;
-    }
-
-    .badge-warning-subtle {
-        background-color: #fff3cd;
-        color: #664d03;
-    }
-
-    .badge-secondary-subtle {
-        background-color: #e2e3e5;
-        color: #495057;
-    }
-
-    @media (max-width: 768px) {
-        .container-fluid {
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-        
-        .display-6 {
-            font-size: 1.75rem;
-        }
-    }
-</style>
 @endsection
