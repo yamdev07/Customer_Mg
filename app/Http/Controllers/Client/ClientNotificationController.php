@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Actions\Client\SendReabonnementNotificationAction;
 use App\Contracts\MessagingServiceInterface;
 use App\Http\Controllers\Controller;
+use App\Models\Activite;
 use App\Models\Client;
 use Carbon\Carbon;
 
@@ -16,6 +17,8 @@ class ClientNotificationController extends Controller
     public function sendEmailNotifications(SendReabonnementNotificationAction $action)
     {
         $count = $action->execute();
+
+        Activite::log('notified', "{$count} notification(s) de réabonnement envoyée(s) par e-mail");
 
         return redirect()->route('clients.index')
             ->with('success', "{$count} notification(s) envoyée(s) avec succès.");
@@ -34,9 +37,13 @@ class ClientNotificationController extends Controller
             [$client->nom_client]
         );
 
-        return $success
-            ? back()->with('success', "Message WhatsApp envoyé à {$client->nom_client}.")
-            : back()->with('error', "Échec de l'envoi WhatsApp à {$client->nom_client}.");
+        if ($success) {
+            Activite::log('notified', "Relance WhatsApp envoyée à « {$client->nom_client} »", $client);
+
+            return back()->with('success', "Message WhatsApp envoyé à {$client->nom_client}.");
+        }
+
+        return back()->with('error', "Échec de l'envoi WhatsApp à {$client->nom_client}.");
     }
 
     /**
@@ -54,9 +61,13 @@ class ClientNotificationController extends Controller
 
         $result = $messaging->sendSMS($numero, $message);
 
-        return $result['success']
-            ? redirect()->back()->with('success', "SMS envoyé à {$client->nom_client}.")
-            : redirect()->back()->with('error', "Erreur lors de l'envoi du SMS.");
+        if ($result['success']) {
+            Activite::log('notified', "Relance SMS envoyée à « {$client->nom_client} »", $client);
+
+            return redirect()->back()->with('success', "SMS envoyé à {$client->nom_client}.");
+        }
+
+        return redirect()->back()->with('error', "Erreur lors de l'envoi du SMS.");
     }
 
     /* ──────────────────────────────────────────────

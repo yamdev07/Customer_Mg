@@ -45,9 +45,44 @@
                         <i class="far fa-calendar me-1"></i>{{ ucfirst(now()->translatedFormat('l d F Y')) }}
                     </div>
                 </div>
+
                 @isset($header)
                     <div class="d-none d-md-block">{{ $header }}</div>
                 @endisset
+
+                {{-- Cloche de notifications --}}
+                @php($notifRecentes = $notifRecentes ?? collect())
+                <div class="topbar-bell" x-data="{ openNotif: false }">
+                    <button class="topbar-bell__btn" @click="openNotif = ! openNotif" aria-label="Notifications">
+                        <i class="fas fa-bell"></i>
+                        @if($notifRecentes->isNotEmpty())
+                            <span class="topbar-bell__dot"></span>
+                        @endif
+                    </button>
+
+                    <div class="topbar-bell__menu" x-show="openNotif" x-transition
+                         @click.outside="openNotif = false" x-cloak>
+                        <div class="topbar-bell__head">
+                            <span class="fw-semibold">Notifications</span>
+                            <a href="{{ route('activites.index') }}" class="small text-decoration-none">Tout voir</a>
+                        </div>
+                        <div class="topbar-bell__list">
+                            @forelse($notifRecentes as $n)
+                                @php($cls = $n->color === 'anyxtech' ? 'bg-anyxtech-light text-anyxtech' : 'bg-'.$n->color.'-light text-'.$n->color.'-600')
+                                <a class="topbar-bell__item"
+                                   href="{{ $n->client_id ? route('clients.show', $n->client_id) : route('activites.index') }}">
+                                    <span class="topbar-bell__ico {{ $cls }}"><i class="fas {{ $n->icon }}"></i></span>
+                                    <span class="topbar-bell__txt">
+                                        {{ $n->description }}
+                                        <small class="d-block text-muted">{{ $n->created_at->diffForHumans() }} · {{ $n->user->name }}</small>
+                                    </span>
+                                </a>
+                            @empty
+                                <div class="topbar-bell__empty">Aucune activité récente</div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
             </header>
 
             {{-- Page --}}

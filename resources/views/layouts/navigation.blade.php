@@ -55,6 +55,10 @@
            class="side-link {{ request()->routeIs('clients.create') ? 'active' : '' }}">
             <i class="fas fa-user-plus"></i> Nouveau client
         </a>
+        <a href="{{ route('activites.index') }}"
+           class="side-link {{ request()->routeIs('activites.index') ? 'active' : '' }}">
+            <i class="fas fa-bell"></i> Notifications
+        </a>
     </nav>
 
     {{-- Pied : utilisateur --}}

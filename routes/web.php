@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\Client\ClientCrudController;
 use App\Http\Controllers\Client\ClientExportController;
 use App\Http\Controllers\Client\ClientFilteredListsController;
@@ -37,6 +38,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/reabonnement', [ClientFilteredListsController::class, 'aReabonnement'])->name('reabonnement');
             Route::get('/depasses', [ClientFilteredListsController::class, 'depasses'])->name('depasses');
         });
+
+        // Journal d'activité (notifications)
+        Route::get('/activites', ActiviteController::class)->name('activites.index');
 
         // Route générique en dernier (capture-tout sur un id de client)
         Route::get('/clients/{client}', [ClientCrudController::class, 'show'])->name('clients.show');

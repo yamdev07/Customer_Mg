@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Actions\Client\ProcessClientPaymentAction;
 use App\Actions\Client\ReverseClientPaymentAction;
 use App\Http\Controllers\Controller;
+use App\Models\Activite;
 use App\Models\Client;
 
 class ClientPaymentController extends Controller
@@ -16,6 +17,8 @@ class ClientPaymentController extends Controller
     {
         $processPayment->execute($client);
 
+        Activite::log('paid', "Paiement enregistré pour « {$client->nom_client} »", $client);
+
         return redirect()->back()
             ->with('success', 'Client marqué comme payé et date de réabonnement mise à jour.');
     }
@@ -26,6 +29,8 @@ class ClientPaymentController extends Controller
     public function reconnect(Client $client, ProcessClientPaymentAction $processPayment)
     {
         $processPayment->execute($client);
+
+        Activite::log('reconnected', "Client « {$client->nom_client} » reconnecté", $client);
 
         return redirect()->back()
             ->with('success', 'Client reconnecté et date de réabonnement mise à jour.');
@@ -40,6 +45,8 @@ class ClientPaymentController extends Controller
     public function disconnect(Client $client, ReverseClientPaymentAction $reversePayment)
     {
         $reversePayment->execute($client);
+
+        Activite::log('disconnected', "Client « {$client->nom_client} » déconnecté (paiement annulé)", $client);
 
         return redirect()->back()
             ->with('success', 'Client déconnecté : son dernier paiement a été annulé.');
