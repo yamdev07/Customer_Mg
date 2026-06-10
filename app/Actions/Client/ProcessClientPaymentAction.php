@@ -5,15 +5,24 @@ namespace App\Actions\Client;
 use App\Models\Client;
 use App\Models\Paiement;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ProcessClientPaymentAction
 {
     /**
      * Traiter le paiement d'un client et mettre à jour son réabonnement.
+     * Le tout dans une transaction : enregistrement du paiement, date de
+     * réabonnement et statut sont cohérents ou rien n'est écrit.
      */
     public function execute(Client $client, ?Carbon $paymentDate = null): void
     {
-        $paymentDate = $paymentDate ?? Carbon::today();
+        DB::transaction(function () use ($client, $paymentDate) {
+            $this->process($client, $paymentDate ?? Carbon::today());
+        });
+    }
+
+    private function process(Client $client, Carbon $paymentDate): void
+    {
 
         // 1. Régler le mois impayé le plus ancien s'il existe (rattrapage de dette),
         //    sinon enregistrer le PROCHAIN mois dû (jamais le mois courant en aveugle).

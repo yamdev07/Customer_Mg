@@ -113,11 +113,19 @@ class Client extends Model
 
     public function getProchainMoisDuAttribute(): string
     {
-        $dernierPaiement = $this->paiements()
-            ->where('statut', true)
-            ->latest('annee')
-            ->latest('mois')
-            ->first();
+        // Utilise la relation pré-chargée si disponible (évite le N+1 sur les listes).
+        if ($this->relationLoaded('paiements')) {
+            $dernierPaiement = $this->paiements
+                ->where('statut', true)
+                ->sortByDesc(fn ($p) => $p->annee * 100 + $p->mois)
+                ->first();
+        } else {
+            $dernierPaiement = $this->paiements()
+                ->where('statut', true)
+                ->latest('annee')
+                ->latest('mois')
+                ->first();
+        }
 
         if ($dernierPaiement) {
             return Carbon::create($dernierPaiement->annee, $dernierPaiement->mois, 1)

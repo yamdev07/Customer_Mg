@@ -4,6 +4,7 @@ namespace App\Actions\Client;
 
 use App\Models\Client;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ReverseClientPaymentAction
 {
@@ -15,6 +16,13 @@ class ReverseClientPaymentAction
      * sur « marquer payé » règle de nouveau ce même mois — opération réversible.
      */
     public function execute(Client $client): void
+    {
+        DB::transaction(function () use ($client) {
+            $this->reverse($client);
+        });
+    }
+
+    private function reverse(Client $client): void
     {
         $dernierPaye = $client->paiements()
             ->where('statut', true)
