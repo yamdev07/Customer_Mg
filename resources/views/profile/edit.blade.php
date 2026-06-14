@@ -2,49 +2,63 @@
 
 @section('title', 'Mon profil')
 
-@section('header')
-<div class="bg-white shadow">
-    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Mon profil</h2>
-    </div>
-</div>
-@endsection
-
 @section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+<div class="container-fluid px-3 px-md-4 py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-xl-8">
 
-        <!-- Bloc résumé du profil -->
-        <div class="p-6 bg-white shadow sm:rounded-lg">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Résumé du profil</h3>
-            <div class="text-gray-700 space-y-2">
-                <p><strong>Nom :</strong> {{ $user->name }}</p>
-                <p><strong>Email :</strong> {{ $user->email }}</p>
-                <p><strong>Date d'inscription :</strong> {{ $user->created_at->format('d/m/Y') }}</p>
+            {{-- Bandeau --}}
+            <div class="page-hero mb-4 ax-fade-up">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 position-relative" style="z-index:1">
+                    <div>
+                        <h1 class="h3 fw-bold mb-1"><i class="fas fa-user-circle me-2"></i>Mon profil</h1>
+                        <p class="mb-0 opacity-75">Gérez vos informations personnelles et votre sécurité</p>
+                    </div>
+                    <a href="{{ route('clients.index') }}" class="btn btn-light fw-semibold">
+                        <i class="fas fa-arrow-left me-2 text-anyxtech"></i>Retour
+                    </a>
+                </div>
             </div>
-        </div>
 
-        <!-- Formulaire de mise à jour des infos -->
-        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-            <div class="max-w-xl">
-                @include('profile.partials.update-profile-information-form')
+            {{-- Résumé du profil --}}
+            <div class="card mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-semibold mb-3"><i class="fas fa-id-card me-2 text-anyxtech"></i>Résumé du profil</h5>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2">Nom</dt>
+                        <dd class="col-sm-8 fw-semibold text-dark py-2">{{ $user->name }}</dd>
+
+                        <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Email</dt>
+                        <dd class="col-sm-8 fw-semibold text-dark py-2 border-top">{{ $user->email }}</dd>
+
+                        <dt class="col-sm-4 text-muted text-uppercase small fw-bold py-2 border-top">Date d'inscription</dt>
+                        <dd class="col-sm-8 fw-semibold text-dark py-2 border-top">{{ $user->created_at->format('d/m/Y') }}</dd>
+                    </dl>
+                </div>
             </div>
-        </div>
 
-        <!-- Formulaire de mise à jour du mot de passe -->
-        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-            <div class="max-w-xl">
-                @include('profile.partials.update-password-form')
+            {{-- Mise à jour des informations --}}
+            <div class="card mb-4">
+                <div class="card-body p-4 p-md-5">
+                    @include('profile.partials.update-profile-information-form')
+                </div>
             </div>
-        </div>
 
-        <!-- Formulaire de suppression du compte -->
-        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-            <div class="max-w-xl">
-                @include('profile.partials.delete-user-form')
+            {{-- Mise à jour du mot de passe --}}
+            <div class="card mb-4">
+                <div class="card-body p-4 p-md-5">
+                    @include('profile.partials.update-password-form')
+                </div>
             </div>
-        </div>
 
+            {{-- Suppression du compte --}}
+            <div class="card mb-4">
+                <div class="card-body p-4 p-md-5">
+                    @include('profile.partials.delete-user-form')
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 @endsection

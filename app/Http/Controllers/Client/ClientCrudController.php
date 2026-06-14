@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Client;
 
 use App\Actions\Client\CalculateReabonnementDateAction;
-use App\Actions\Client\ProcessClientPaymentAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
+use App\Models\Activite;
 use App\Models\Client;
 
 class ClientCrudController extends Controller
@@ -30,7 +30,9 @@ class ClientCrudController extends Controller
             new Client($validated)
         );
 
-        Client::create($validated);
+        $client = Client::create($validated);
+
+        Activite::log('created', "Client « {$client->nom_client} » créé", $client);
 
         return redirect()->route('clients.index')
             ->with('success', 'Client ajouté avec succès !');
@@ -64,6 +66,8 @@ class ClientCrudController extends Controller
         $client->date_reabonnement = $calculateDate->execute($client);
         $client->save();
 
+        Activite::log('updated', "Client « {$client->nom_client} » modifié", $client);
+
         return redirect()->route('clients.index')
             ->with('success', 'Client modifié avec succès.');
     }
@@ -73,7 +77,10 @@ class ClientCrudController extends Controller
      */
     public function destroy(Client $client)
     {
+        $nom = $client->nom_client;
         $client->delete();
+
+        Activite::log('deleted', "Client « {$nom} » supprimé");
 
         return redirect()->route('clients.index')
             ->with('success', 'Client supprimé avec succès.');

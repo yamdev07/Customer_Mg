@@ -12,7 +12,7 @@ class SyncClientStatusAction
      */
     public function execute(): void
     {
-        $today       = Carbon::today();
+        $today = Carbon::today();
         $moisCourant = $today->month;
         $anneeCourante = $today->year;
 
@@ -41,9 +41,13 @@ class SyncClientStatusAction
             }
         }
 
-        // Calculer le prochain mois dû
-        $client->prochain_mois_du = $client->prochainMoisDu()->format('Y-m-d');
+        // Note : « prochain_mois_du » n'est PAS une colonne, c'est un accesseur
+        // calculé à la lecture (getProchainMoisDuAttribute). Ne rien y affecter ici,
+        // sinon Eloquent tente d'écrire une colonne inexistante.
 
-        $client->saveQuietly();
+        // N'enregistrer que si quelque chose a réellement changé (évite des UPDATE inutiles).
+        if ($client->isDirty()) {
+            $client->saveQuietly();
+        }
     }
 }

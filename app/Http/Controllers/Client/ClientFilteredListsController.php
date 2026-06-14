@@ -14,7 +14,7 @@ class ClientFilteredListsController extends Controller
      */
     public function payes(Request $request)
     {
-        $today       = Carbon::today();
+        $today = Carbon::today();
         $moisCourant = $today->month;
         $anneeCourante = $today->year;
 
@@ -25,7 +25,7 @@ class ClientFilteredListsController extends Controller
         }
 
         $clients = $query->orderBy('id')->paginate(10)->appends($request->all());
-        $stats   = $this->getStats($moisCourant, $anneeCourante);
+        $stats = $this->getStats($moisCourant, $anneeCourante);
 
         return view('clients.payes', array_merge(compact('clients'), $stats));
     }
@@ -35,7 +35,7 @@ class ClientFilteredListsController extends Controller
      */
     public function nonPayes(Request $request)
     {
-        $today       = Carbon::today();
+        $today = Carbon::today();
         $moisCourant = $today->month;
         $anneeCourante = $today->year;
 
@@ -46,7 +46,7 @@ class ClientFilteredListsController extends Controller
         }
 
         $clients = $query->orderBy('id')->paginate(10)->appends($request->all());
-        $stats   = $this->getStats($moisCourant, $anneeCourante);
+        $stats = $this->getStats($moisCourant, $anneeCourante);
 
         return view('clients.nonpayes', array_merge(compact('clients'), $stats));
     }
@@ -63,7 +63,7 @@ class ClientFilteredListsController extends Controller
         }
 
         $clients = $query->orderBy('id')->paginate(10)->appends($request->all());
-        $stats   = $this->getStats();
+        $stats = $this->getStats();
 
         return view('clients.actifs', array_merge(compact('clients'), $stats));
     }
@@ -80,7 +80,7 @@ class ClientFilteredListsController extends Controller
         }
 
         $clients = $query->orderBy('id')->paginate(10)->appends($request->all());
-        $stats   = $this->getStats();
+        $stats = $this->getStats();
 
         return view('clients.suspendus', array_merge(compact('clients'), $stats));
     }
@@ -97,7 +97,7 @@ class ClientFilteredListsController extends Controller
         }
 
         $clients = $query->paginate(10)->appends($request->all());
-        $stats   = $this->getStats();
+        $stats = $this->getStats();
 
         return view('clients.reabonnement', array_merge(compact('clients'), $stats));
     }
@@ -107,7 +107,7 @@ class ClientFilteredListsController extends Controller
      */
     public function depasses(Request $request)
     {
-        $today       = Carbon::today();
+        $today = Carbon::today();
         $moisCourant = $today->month;
         $anneeCourante = $today->year;
 
@@ -120,7 +120,7 @@ class ClientFilteredListsController extends Controller
         }
 
         $clients = $query->paginate(10)->appends($request->all());
-        $stats   = $this->getStats($moisCourant, $anneeCourante);
+        $stats = $this->getStats($moisCourant, $anneeCourante);
 
         return view('clients.depasses', array_merge(compact('clients'), $stats));
     }
@@ -130,16 +130,16 @@ class ClientFilteredListsController extends Controller
      */
     private function getStats(?int $moisCourant = null, ?int $anneeCourante = null): array
     {
-        $moisCourant   = $moisCourant ?? Carbon::today()->month;
+        $moisCourant = $moisCourant ?? Carbon::today()->month;
         $anneeCourante = $anneeCourante ?? Carbon::today()->year;
 
         return [
-            'totalClientsCount'          => Client::count(),
-            'payes'                      => Client::payesPourMois($moisCourant, $anneeCourante)->count(),
-            'nonPayes'                   => Client::nonPayesPourMois($moisCourant, $anneeCourante)->count(),
-            'actifs'                     => Client::actifs()->count(),
-            'suspendus'                  => Client::suspendus()->count(),
-            'clientsReabonnementProche'  => Client::reabonnementProche(5)->count(),
+            'totalClientsCount' => Client::count(),
+            'payes' => Client::payesPourMois($moisCourant, $anneeCourante)->count(),
+            'nonPayes' => Client::nonPayesPourMois($moisCourant, $anneeCourante)->count(),
+            'actifs' => Client::actifs()->count(),
+            'suspendus' => Client::suspendus()->count(),
+            'clientsReabonnementProche' => Client::reabonnementProche(5)->count(),
             'clientsReabonnementDepasse' => Client::reabonnementDepasse()->count(),
         ];
     }

@@ -8,32 +8,23 @@ use Illuminate\Http\Request;
 class RoleMiddleware
 {
     /**
-     * Gérer l'accès selon le rôle.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string  $role
-     * @return mixed
+     * Gérer l'accès selon un ou plusieurs rôles autorisés.
+     * Usage : ->middleware('role:commercial,admin')
      */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, string ...$roles)
     {
         $user = auth()->user();
 
         // Non connecté
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login');
         }
 
-        // L'utilisateur est admin => accès autorisé partout
-        if ($user->role === 'admin') {
+        // L'admin a accès partout ; sinon le rôle doit figurer parmi ceux autorisés.
+        if ($user->role === 'admin' || in_array($user->role, $roles, true)) {
             return $next($request);
         }
 
-        // Vérifier le rôle spécifique
-        if ($user->role !== $role) {
-            abort(403, "Accès refusé.");
-        }
-
-        return $next($request);
+        abort(403, 'Accès refusé.');
     }
 }

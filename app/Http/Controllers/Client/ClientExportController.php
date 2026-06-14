@@ -21,13 +21,13 @@ class ClientExportController extends Controller
                 ->where('a_paye', false)
                 ->whereDate('date_reabonnement', '<', now())
                 ->get(),
-            'active'  => Client::actifs()->get(),
-            default   => Client::all(),
+            'active' => Client::actifs()->get(),
+            default => Client::all(),
         };
 
         $pdf = Pdf::loadView('clients.export_pdf', compact('clients'));
 
-        return $pdf->download('clients_' . $type . '.pdf');
+        return $pdf->download('clients_'.$type.'.pdf');
     }
 
     /**
@@ -36,7 +36,7 @@ class ClientExportController extends Controller
     public function exportActivePdf()
     {
         $clients = Client::actifs()->get();
-        $pdf     = Pdf::loadView('clients.pdf', compact('clients'));
+        $pdf = Pdf::loadView('clients.pdf', compact('clients'));
 
         return $pdf->download('clients_actifs.pdf');
     }

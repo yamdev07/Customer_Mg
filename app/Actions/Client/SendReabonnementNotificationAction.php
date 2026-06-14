@@ -21,7 +21,7 @@ class SendReabonnementNotificationAction
         $count = 0;
 
         foreach ($clients as $client) {
-            if (!$client->email) {
+            if (! $client->email) {
                 continue;
             }
 
@@ -29,7 +29,7 @@ class SendReabonnementNotificationAction
                 "Bonjour {$client->nom_client}, votre date de réabonnement approche. Merci de renouveler via ce lien : https://anyxtech.com/reabonnement",
                 function ($message) use ($client) {
                     $message->to($client->email)
-                            ->subject('Réabonnement AnyxTech - Échéance proche');
+                        ->subject('Réabonnement AnyxTech - Échéance proche');
                 }
             );
 

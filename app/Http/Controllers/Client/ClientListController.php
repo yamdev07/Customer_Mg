@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ClientListController extends Controller
 {
@@ -17,11 +18,11 @@ class ClientListController extends Controller
     {
         $this->syncClientsStatus();
 
-        $today       = Carbon::today();
+        $today = Carbon::today();
         $moisCourant = $today->month;
         $anneeCourante = $today->year;
 
-        $query = Client::query();
+        $query = Client::query()->with('paiements');
 
         if ($request->filled('search')) {
             $query->search($request->input('search'));
@@ -36,10 +37,16 @@ class ClientListController extends Controller
 
     /**
      * Synchroniser le statut des clients.
+     *
+     * Throttle : au plus une fois toutes les 15 minutes, au lieu de recalculer
+     * tous les clients à chaque affichage de la page. La synchro complète est
+     * aussi planifiée (commande clients:synchroniser-statuts) pour la production.
      */
     private function syncClientsStatus(): void
     {
-        app(SyncClientStatusAction::class)->execute();
+        if (Cache::add('clients:sync-lock', true, now()->addMinutes(15))) {
+            app(SyncClientStatusAction::class)->execute();
+        }
     }
 
     /**
@@ -50,13 +57,13 @@ class ClientListController extends Controller
         $today = Carbon::today();
 
         return [
-            'totalClientsCount'             => Client::count(),
-            'payes'                         => Client::payesPourMois($moisCourant, $anneeCourante)->count(),
-            'nonPayes'                      => Client::nonPayesPourMois($moisCourant, $anneeCourante)->count(),
-            'actifs'                        => Client::actifs()->count(),
-            'suspendus'                     => Client::suspendus()->count(),
-            'clientsReabonnementProche'     => Client::reabonnementProche(5)->count(),
-            'clientsReabonnementDepasse'    => Client::reabonnementDepasse()->count(),
+            'totalClientsCount' => Client::count(),
+            'payes' => Client::payesPourMois($moisCourant, $anneeCourante)->count(),
+            'nonPayes' => Client::nonPayesPourMois($moisCourant, $anneeCourante)->count(),
+            'actifs' => Client::actifs()->count(),
+            'suspendus' => Client::suspendus()->count(),
+            'clientsReabonnementProche' => Client::reabonnementProche(5)->count(),
+            'clientsReabonnementDepasse' => Client::reabonnementDepasse()->count(),
         ];
     }
 }

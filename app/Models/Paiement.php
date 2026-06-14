@@ -24,11 +24,11 @@ class Paiement extends Model
     ];
 
     protected $casts = [
-        'statut'        => 'boolean',
-        'montant'       => 'decimal:2',
+        'statut' => 'boolean',
+        'montant' => 'decimal:2',
         'date_paiement' => 'date',
-        'mois'          => 'integer',
-        'annee'         => 'integer',
+        'mois' => 'integer',
+        'annee' => 'integer',
     ];
 
     /* ──────────────────────────────────────────────

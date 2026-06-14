@@ -3,7 +3,7 @@
 @forelse ($clients as $client)
     {{-- Les data-attributs ne sont plus nécessaires pour la recherche, car elle est gérée côté serveur --}}
     {{-- Je les laisse au cas où vous auriez d'autres scripts JS qui les utilisent --}}
-    <tr data-nom="{{ $client->nom_client ?? '' }}" data-siterelais="{{ $client->site_relais ?? '' }}" data-contact="{{ $client->contact ?? '' }}">
+    <tr data-nom="{{ $client->nom_client ?? '' }}" data-siterelais="{{ $client->sites_relais ?? '' }}" data-contact="{{ $client->contact ?? '' }}">
         <td class="ps-4">{{ $loop->iteration + ($clients->perPage() * ($clients->currentPage() - 1)) }}</td>
         <td>
             <div class="d-flex align-items-center">
@@ -17,7 +17,7 @@
             </div>
         </td>
         <td>{{ $client->contact }}</td>
-        <td>{{ $client->site_relais ?? 'N/A' }}</td>
+        <td>{{ $client->sites_relais ?? 'N/A' }}</td>
         <td>
             @if ($client->statut == 'actif')
                 <span class="badge bg-success-subtle text-success fw-semibold py-2 px-3 rounded-pill">Actif</span>

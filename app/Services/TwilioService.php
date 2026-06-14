@@ -9,7 +9,9 @@ use Twilio\Rest\Client as TwilioClient;
 class TwilioService implements MessagingServiceInterface
 {
     protected TwilioClient $twilio;
+
     protected string $from;
+
     protected string $whatsappFrom;
 
     public function __construct()
@@ -18,7 +20,7 @@ class TwilioService implements MessagingServiceInterface
             config('services.twilio.sid', ''),
             config('services.twilio.token', '')
         );
-        $this->from        = config('services.twilio.from', '');
+        $this->from = config('services.twilio.from', '');
         $this->whatsappFrom = config('services.twilio.whatsapp_from', '');
     }
 
@@ -42,7 +44,7 @@ class TwilioService implements MessagingServiceInterface
 
             return [
                 'success' => true,
-                'sid'     => $messageInstance->sid,
+                'sid' => $messageInstance->sid,
                 'message' => 'SMS envoyé avec succès',
             ];
         } catch (\Exception $e) {
@@ -58,7 +60,7 @@ class TwilioService implements MessagingServiceInterface
     public function sendWhatsApp(string $to, string $message): array
     {
         try {
-            $to = 'whatsapp:' . $this->formatPhoneNumber($to);
+            $to = 'whatsapp:'.$this->formatPhoneNumber($to);
 
             $messageInstance = $this->twilio->messages->create(
                 $to,
@@ -72,7 +74,7 @@ class TwilioService implements MessagingServiceInterface
 
             return [
                 'success' => true,
-                'sid'     => $messageInstance->sid,
+                'sid' => $messageInstance->sid,
                 'message' => 'Message WhatsApp envoyé avec succès',
             ];
         } catch (\Exception $e) {
@@ -91,7 +93,7 @@ class TwilioService implements MessagingServiceInterface
         // On compose le message manuellement avec les placeholders
         $message = $templateName;
         foreach ($placeholders as $placeholder) {
-            $message .= ' ' . $placeholder;
+            $message .= ' '.$placeholder;
         }
 
         $result = $this->sendWhatsApp($to, $message);
@@ -108,9 +110,9 @@ class TwilioService implements MessagingServiceInterface
             $message = $this->twilio->messages($messageSid)->fetch();
 
             return [
-                'success'       => true,
-                'status'        => $message->status,
-                'error_code'    => $message->errorCode,
+                'success' => true,
+                'status' => $message->status,
+                'error_code' => $message->errorCode,
                 'error_message' => $message->errorMessage,
             ];
         } catch (\Exception $e) {
@@ -127,11 +129,11 @@ class TwilioService implements MessagingServiceInterface
         $number = preg_replace('/[^0-9]/', '', $number);
 
         if (strlen($number) === 8) {
-            $number = '+229' . $number;
+            $number = '+229'.$number;
         } elseif (strlen($number) === 11 && str_starts_with($number, '229')) {
-            $number = '+' . $number;
-        } elseif (!str_starts_with($number, '+')) {
-            $number = '+' . $number;
+            $number = '+'.$number;
+        } elseif (! str_starts_with($number, '+')) {
+            $number = '+'.$number;
         }
 
         return $number;

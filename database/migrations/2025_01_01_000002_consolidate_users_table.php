@@ -15,16 +15,16 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Ajouter les colonnes manquantes si elles n'existent pas
-            if (!Schema::hasColumn('users', 'role')) {
+            if (! Schema::hasColumn('users', 'role')) {
                 $table->string('role')->default('commercial')->after('email');
             }
-            if (!Schema::hasColumn('users', 'first_name')) {
+            if (! Schema::hasColumn('users', 'first_name')) {
                 $table->string('first_name')->nullable()->after('name');
             }
-            if (!Schema::hasColumn('users', 'phone')) {
+            if (! Schema::hasColumn('users', 'phone')) {
                 $table->string('phone')->nullable()->after('first_name');
             }
-            if (!Schema::hasColumn('users', 'company')) {
+            if (! Schema::hasColumn('users', 'company')) {
                 $table->string('company')->nullable()->after('phone');
             }
 

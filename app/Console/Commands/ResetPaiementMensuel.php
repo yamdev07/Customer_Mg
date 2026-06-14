@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Client;
+use Illuminate\Console\Command;
 
 class ResetPaiementMensuel extends Command
 {

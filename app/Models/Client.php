@@ -14,7 +14,9 @@ class Client extends Model
 
     // ── Statuts possibles ──
     public const STATUS_ACTIF = 'actif';
+
     public const STATUS_INACTIF = 'inactif';
+
     public const STATUS_SUSPENDU = 'suspendu';
 
     protected $table = 'clients';
@@ -34,9 +36,9 @@ class Client extends Model
     ];
 
     protected $casts = [
-        'a_paye'            => 'boolean',
+        'a_paye' => 'boolean',
         'date_reabonnement' => 'date',
-        'montant'           => 'decimal:2',
+        'montant' => 'decimal:2',
         'jour_reabonnement' => 'integer',
     ];
 
@@ -84,8 +86,9 @@ class Client extends Model
     public function scopeReabonnementProche(Builder $query, int $jours = 5): Builder
     {
         $today = Carbon::today();
+
         return $query->whereDate('date_reabonnement', '<=', $today->copy()->addDays($jours))
-                     ->whereDate('date_reabonnement', '>=', $today);
+            ->whereDate('date_reabonnement', '>=', $today);
     }
 
     public function scopeReabonnementDepasse(Builder $query): Builder
@@ -96,10 +99,11 @@ class Client extends Model
     public function scopeSearch(Builder $query, string $search): Builder
     {
         $search = strtolower($search);
+
         return $query->where(function ($q) use ($search) {
             $q->whereRaw('LOWER(nom_client) LIKE ?', ["%{$search}%"])
-              ->orWhereRaw('LOWER(contact) LIKE ?', ["%{$search}%"])
-              ->orWhereRaw('LOWER(sites_relais) LIKE ?', ["%{$search}%"]);
+                ->orWhereRaw('LOWER(contact) LIKE ?', ["%{$search}%"])
+                ->orWhereRaw('LOWER(sites_relais) LIKE ?', ["%{$search}%"]);
         });
     }
 
@@ -109,11 +113,19 @@ class Client extends Model
 
     public function getProchainMoisDuAttribute(): string
     {
-        $dernierPaiement = $this->paiements()
-            ->where('statut', true)
-            ->latest('annee')
-            ->latest('mois')
-            ->first();
+        // Utilise la relation pré-chargée si disponible (évite le N+1 sur les listes).
+        if ($this->relationLoaded('paiements')) {
+            $dernierPaiement = $this->paiements
+                ->where('statut', true)
+                ->sortByDesc(fn ($p) => $p->annee * 100 + $p->mois)
+                ->first();
+        } else {
+            $dernierPaiement = $this->paiements()
+                ->where('statut', true)
+                ->latest('annee')
+                ->latest('mois')
+                ->first();
+        }
 
         if ($dernierPaiement) {
             return Carbon::create($dernierPaiement->annee, $dernierPaiement->mois, 1)
@@ -166,6 +178,7 @@ class Client extends Model
                 $mois = 1;
                 $annee++;
             }
+
             return Carbon::create($annee, $mois, $this->jour_reabonnement ?? 1);
         }
 

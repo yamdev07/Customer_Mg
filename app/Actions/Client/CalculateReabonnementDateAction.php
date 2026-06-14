@@ -16,14 +16,14 @@ class CalculateReabonnementDateAction
 
         // Si le client a payé, on utilise le mois suivant
         if ($client->a_paye) {
-            $mois  = $today->month + 1;
+            $mois = $today->month + 1;
             $annee = $today->year;
             if ($mois > 12) {
                 $mois = 1;
                 $annee++;
             }
         } else {
-            $mois  = $today->month;
+            $mois = $today->month;
             $annee = $today->year;
         }
 
