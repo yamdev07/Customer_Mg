@@ -9,6 +9,7 @@ use App\Http\Controllers\Client\ClientNotificationController;
 use App\Http\Controllers\Client\ClientPaymentController;
 use App\Http\Controllers\Client\ClientStatusController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 // ── Page d'accueil publique ──
@@ -41,6 +42,17 @@ Route::middleware(['auth'])->group(function () {
 
         // Journal d'activité (notifications)
         Route::get('/activites', ActiviteController::class)->name('activites.index');
+
+        // Services
+        Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+        Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
+        Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
+        Route::get('/services/{service}', [ServiceController::class, 'show'])->name('services.show');
+        Route::get('/services/{service}/edit', [ServiceController::class, 'edit'])->name('services.edit');
+        Route::put('/services/{service}', [ServiceController::class, 'update'])->name('services.update');
+        Route::delete('/services/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
+        Route::post('/services/{service}/add-client', [ServiceController::class, 'addClient'])->name('services.addClient');
+        Route::delete('/services/{service}/remove-client/{client}', [ServiceController::class, 'removeClient'])->name('services.removeClient');
 
         // Route générique en dernier (capture-tout sur un id de client)
         Route::get('/clients/{client}', [ClientCrudController::class, 'show'])->name('clients.show');

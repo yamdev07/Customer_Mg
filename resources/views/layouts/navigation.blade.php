@@ -50,6 +50,12 @@
             <i class="fas fa-triangle-exclamation"></i> Réabonnement dépassé
         </a>
 
+        <p class="app-sidebar__label mt-3">Services</p>
+        <a href="{{ route('services.index') }}"
+           class="side-link {{ request()->routeIs('services.*') ? 'active' : '' }}">
+            <i class="fas fa-cogs"></i> Services
+        </a>
+
         <p class="app-sidebar__label mt-3">Actions</p>
         <a href="{{ route('clients.create') }}"
            class="side-link {{ request()->routeIs('clients.create') ? 'active' : '' }}">
