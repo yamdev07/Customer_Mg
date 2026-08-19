@@ -7,12 +7,9 @@
 
     <div class="page-hero mb-4 ax-fade-up">
         <div class="position-relative" style="z-index:1">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-1">
-                    <li class="breadcrumb-item"><a href="{{ route('services.index') }}" class="text-decoration-none">Services</a></li>
-                    <li class="breadcrumb-item active">{{ $service->nom }}</li>
-                </ol>
-            </nav>
+            <a href="{{ route('services.show', $service) }}" class="btn btn-outline-secondary btn-sm mb-2">
+                <i class="fas fa-arrow-left me-1"></i>Retour
+            </a>
             <h1 class="h3 fw-bold mb-0"><i class="fas fa-pen me-2"></i>Modifier {{ $service->nom }}</h1>
         </div>
     </div>
