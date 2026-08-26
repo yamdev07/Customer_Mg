@@ -4,6 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Service;
 use App\Models\Client;
+use App\Models\Connexion;
+use App\Models\SaaS\HotelUser;
+use App\Models\SaaS\HotelCustomer;
+use App\Models\SaaS\HotelSubscription;
+use App\Models\SaaS\CuniAppUser;
+use App\Models\SaaS\CuniAppSubscription;
+use App\Models\SaaS\CuniAppFirm;
+use App\Models\SaaS\ClicTableUser;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -17,6 +25,117 @@ class ServiceController extends Controller
 
     public function show(Service $service)
     {
+        $saasData = $this->getSaasData($service);
+
+        return view('services.show', array_merge(['service' => $service], $saasData));
+    }
+
+    private function getSaasData(Service $service): array
+    {
+        $nom = strtolower($service->nom);
+
+        if (str_contains($nom, 'hotel')) {
+            return $this->getHotelData();
+        }
+
+        if (str_contains($nom, 'cuni')) {
+            return $this->getCuniAppData();
+        }
+
+        if (str_contains($nom, 'clic') || str_contains($nom, 'table') || str_contains($nom, 'pos')) {
+            return $this->getClicTableData();
+        }
+
+        return $this->getDefaultData($service);
+    }
+
+    private function getHotelData(): array
+    {
+        $users = HotelUser::latest('created_at')->limit(20)->get();
+        $customers = HotelCustomer::count();
+        $subscriptions = HotelSubscription::count();
+
+        $dernieresConnexions = HotelUser::orderByDesc('last_login_at')
+            ->limit(20)
+            ->get()
+            ->map(fn ($u) => (object) [
+                'nom' => $u->name,
+                'email' => $u->email,
+                'date_connexion' => $u->last_login_at,
+                'statut' => $u->is_active_session ? 'Actif' : 'Inactif',
+            ]);
+
+        $nouveauxClients = HotelUser::orderByDesc('created_at')
+            ->limit(10)
+            ->get()
+            ->map(fn ($u) => (object) [
+                'nom' => $u->name,
+                'email' => $u->email,
+                'created_at' => $u->created_at,
+                'role' => $u->role,
+            ]);
+
+        return compact('users', 'customers', 'subscriptions', 'dernieresConnexions', 'nouveauxClients');
+    }
+
+    private function getCuniAppData(): array
+    {
+        $users = CuniAppUser::latest('created_at')->limit(20)->get();
+        $firms = CuniAppFirm::count();
+        $subscriptions = CuniAppSubscription::count();
+
+        $dernieresConnexions = CuniAppUser::orderByDesc('last_seen_at')
+            ->limit(20)
+            ->get()
+            ->map(fn ($u) => (object) [
+                'nom' => $u->name,
+                'email' => $u->email,
+                'date_connexion' => $u->last_seen_at,
+                'statut' => $u->status === 'active' ? 'Actif' : 'Inactif',
+            ]);
+
+        $nouveauxClients = CuniAppUser::orderByDesc('created_at')
+            ->limit(10)
+            ->get()
+            ->map(fn ($u) => (object) [
+                'nom' => $u->name,
+                'email' => $u->email,
+                'created_at' => $u->created_at,
+                'role' => $u->role,
+            ]);
+
+        return compact('users', 'firms', 'subscriptions', 'dernieresConnexions', 'nouveauxClients');
+    }
+
+    private function getClicTableData(): array
+    {
+        $users = ClicTableUser::latest('created_at')->limit(20)->get();
+
+        $dernieresConnexions = ClicTableUser::orderByDesc('updated_at')
+            ->limit(20)
+            ->get()
+            ->map(fn ($u) => (object) [
+                'nom' => $u->name ?? $u->email ?? 'User #' . $u->id,
+                'email' => $u->email,
+                'date_connexion' => $u->updated_at,
+                'statut' => 'Actif',
+            ]);
+
+        $nouveauxClients = ClicTableUser::orderByDesc('created_at')
+            ->limit(10)
+            ->get()
+            ->map(fn ($u) => (object) [
+                'nom' => $u->name ?? $u->email ?? 'User #' . $u->id,
+                'email' => $u->email,
+                'created_at' => $u->created_at,
+                'role' => $u->role ?? 'user',
+            ]);
+
+        return compact('users', 'dernieresConnexions', 'nouveauxClients');
+    }
+
+    private function getDefaultData(Service $service): array
+    {
         $service->load(['clients' => function ($q) {
             $q->orderBy('nom_client');
         }]);
@@ -25,7 +144,19 @@ class ServiceController extends Controller
         $clientsPayes = $service->clients->where('pivot.a_paye', true)->count();
         $chiffreAffaires = $service->clients->sum('pivot.montant');
 
-        return view('services.show', compact('service', 'totalClients', 'clientsPayes', 'chiffreAffaires'));
+        $dernieresConnexions = $service->connexions()
+            ->with('client')
+            ->latest('date_connexion')
+            ->limit(20)
+            ->get();
+
+        $nouveauxClients = $service->clients()
+            ->withPivot('created_at')
+            ->orderByDesc('client_service.created_at')
+            ->limit(10)
+            ->get();
+
+        return compact('totalClients', 'clientsPayes', 'chiffreAffaires', 'dernieresConnexions', 'nouveauxClients');
     }
 
     public function create()
@@ -98,5 +229,22 @@ class ServiceController extends Controller
         $service->clients()->detach($client->id);
 
         return redirect()->route('services.show', $service)->with('success', 'Client retiré du service.');
+    }
+
+    public function enregistrerConnexion(Request $request, Service $service)
+    {
+        $validated = $request->validate([
+            'client_id' => 'required|exists:clients,id',
+        ]);
+
+        Connexion::create([
+            'client_id' => $validated['client_id'],
+            'service_id' => $service->id,
+            'date_connexion' => now(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        return redirect()->route('services.show', $service)->with('success', 'Connexion enregistrée.');
     }
 }

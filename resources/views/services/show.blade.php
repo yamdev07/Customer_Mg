@@ -19,13 +19,6 @@
                 @if($service->description)
                     <p class="mb-0 opacity-75">{{ $service->description }}</p>
                 @endif
-                <h1 class="h3 fw-bold mb-1">
-                    <span class="me-2" style="display:inline-block;width:14px;height:14px;border-radius:50%;background:{{ $service->couleur }}"></span>
-                    {{ $service->nom }}
-                </h1>
-                @if($service->description)
-                    <p class="mb-0 opacity-75">{{ $service->description }}</p>
-                @endif
             </div>
             <div class="d-flex gap-2">
                 @if(auth()->user()->role === 'admin')
@@ -46,66 +39,137 @@
 
     {{-- Stats --}}
     <div class="row g-3 g-md-4 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-hover h-100 ax-fade-up">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-ico bg-anyxtech-light text-anyxtech">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="ms-3">
-                            <div class="text-muted fw-semibold small">Clients abonnés</div>
-                            <div class="h3 fw-bold mb-0 text-anyxtech">{{ $totalClients }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-hover h-100 ax-fade-up">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-ico bg-success-light text-success-600">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="ms-3">
-                            <div class="text-muted fw-semibold small">Payés ce mois</div>
-                            <div class="h3 fw-bold mb-0 text-success-600">{{ $clientsPayes }}</div>
+        @if(isset($users))
+            {{-- Stats pour SaaS externes --}}
+            <div class="col-xl-3 col-md-6">
+                <div class="card card-hover h-100 ax-fade-up">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-ico bg-anyxtech-light text-anyxtech">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="ms-3">
+                                <div class="text-muted fw-semibold small">Utilisateurs</div>
+                                <div class="h3 fw-bold mb-0 text-anyxtech">{{ $users->count() }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-hover h-100 ax-fade-up">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-ico bg-danger-light text-danger-600">
-                            <i class="fas fa-exclamation-circle"></i>
-                        </div>
-                        <div class="ms-3">
-                            <div class="text-muted fw-semibold small">Impayés</div>
-                            <div class="h3 fw-bold mb-0 text-danger-600">{{ $totalClients - $clientsPayes }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-hover h-100 ax-fade-up">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-ico bg-warning-light text-warning">
-                            <i class="fas fa-money-bill"></i>
-                        </div>
-                        <div class="ms-3">
-                            <div class="text-muted fw-semibold small">CA mensuel</div>
-                            <div class="h3 fw-bold mb-0 text-warning">{{ number_format($chiffreAffaires, 0, ',', ' ') }} <small>FCFA</small></div>
+            @if(isset($customers))
+            <div class="col-xl-3 col-md-6">
+                <div class="card card-hover h-100 ax-fade-up">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-ico bg-success-light text-success-600">
+                                <i class="fas fa-user-friends"></i>
+                            </div>
+                            <div class="ms-3">
+                                <div class="text-muted fw-semibold small">Clients</div>
+                                <div class="h3 fw-bold mb-0 text-success-600">{{ $customers }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+            @endif
+            @if(isset($firms))
+            <div class="col-xl-3 col-md-6">
+                <div class="card card-hover h-100 ax-fade-up">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-ico bg-success-light text-success-600">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="ms-3">
+                                <div class="text-muted fw-semibold small">Entreprises</div>
+                                <div class="h3 fw-bold mb-0 text-success-600">{{ $firms }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+            @if(isset($subscriptions))
+            <div class="col-xl-3 col-md-6">
+                <div class="card card-hover h-100 ax-fade-up">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-ico bg-warning-light text-warning">
+                                <i class="fas fa-file-invoice"></i>
+                            </div>
+                            <div class="ms-3">
+                                <div class="text-muted fw-semibold small">Abonnements</div>
+                                <div class="h3 fw-bold mb-0 text-warning">{{ $subscriptions }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+        @else
+            {{-- Stats pour service local --}}
+            <div class="col-xl-3 col-md-6">
+                <div class="card card-hover h-100 ax-fade-up">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-ico bg-anyxtech-light text-anyxtech">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="ms-3">
+                                <div class="text-muted fw-semibold small">Clients abonnés</div>
+                                <div class="h3 fw-bold mb-0 text-anyxtech">{{ $totalClients ?? 0 }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card card-hover h-100 ax-fade-up">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-ico bg-success-light text-success-600">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="ms-3">
+                                <div class="text-muted fw-semibold small">Payés ce mois</div>
+                                <div class="h3 fw-bold mb-0 text-success-600">{{ $clientsPayes ?? 0 }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card card-hover h-100 ax-fade-up">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-ico bg-danger-light text-danger-600">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="ms-3">
+                                <div class="text-muted fw-semibold small">Impayés</div>
+                                <div class="h3 fw-bold mb-0 text-danger-600">{{ ($totalClients ?? 0) - ($clientsPayes ?? 0) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card card-hover h-100 ax-fade-up">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-ico bg-warning-light text-warning">
+                                <i class="fas fa-money-bill"></i>
+                            </div>
+                            <div class="ms-3">
+                                <div class="text-muted fw-semibold small">CA mensuel</div>
+                                <div class="h3 fw-bold mb-0 text-warning">{{ number_format($chiffreAffaires ?? 0, 0, ',', ' ') }} <small>FCFA</small></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 
     {{-- Onglets --}}
@@ -141,55 +205,64 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-anyxtech text-white">
                                 <tr>
-                                    <th class="ps-4">Client</th>
-                                    <th>Contact</th>
-                                    <th>Montant</th>
-                                    <th>Jour réab.</th>
-                                    <th>Date réab.</th>
-                                    <th>Statut</th>
-                                    @if(auth()->user()->role === 'admin')
-                                    <th class="pe-4">Actions</th>
+                                    <th class="ps-4">Nom</th>
+                                    <th>Email</th>
+                                    @if(isset($users))
+                                        <th>Rôle</th>
+                                        <th>Statut</th>
+                                    @else
+                                        <th>Contact</th>
+                                        <th>Montant</th>
+                                        <th>Date réab.</th>
+                                        <th>Statut</th>
                                     @endif
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($service->clients as $client)
-                                    <tr>
-                                        <td class="ps-4">
-                                            <a href="{{ route('clients.show', $client) }}" class="text-decoration-none fw-semibold">
-                                                {{ $client->nom_client }}
-                                            </a>
-                                        </td>
-                                        <td>{{ $client->contact }}</td>
-                                        <td class="fw-semibold">{{ $client->pivot->montant ? number_format($client->pivot->montant, 0, ',', ' ') . ' FCFA' : '—' }}</td>
-                                        <td>{{ $client->pivot->jour_reabonnement ?? '—' }}</td>
-                                        <td>{{ $client->pivot->date_reabonnement ? \Carbon\Carbon::parse($client->pivot->date_reabonnement)->format('d/m/Y') : '—' }}</td>
-                                        <td>
-                                            @if($client->pivot->a_paye)
-                                                <span class="badge bg-success">Payé</span>
-                                            @else
-                                                <span class="badge bg-danger">Impayé</span>
-                                            @endif
-                                        </td>
-                                        @if(auth()->user()->role === 'admin')
-                                        <td class="pe-4">
-                                            <form action="{{ route('services.removeClient', [$service, $client]) }}" method="POST"
-                                                  onsubmit="return confirm('Retirer ce client du service ?')" class="d-inline">
-                                                @csrf @method('DELETE')
-                                                <button class="btn btn-outline-danger btn-sm" title="Retirer">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                        @endif
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center py-4 text-muted">
-                                            Aucun abonné à ce service.
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                @if(isset($users))
+                                    @forelse($users as $user)
+                                        <tr>
+                                            <td class="ps-4 fw-semibold">{{ $user->name }}</td>
+                                            <td>{{ $user->email }}</td>
+                                            <td><span class="badge bg-info">{{ $user->role ?? 'user' }}</span></td>
+                                            <td>
+                                                @if(isset($user->subscription_status) && $user->subscription_status === 'active')
+                                                    <span class="badge bg-success">Actif</span>
+                                                @else
+                                                    <span class="badge bg-secondary">{{ $user->subscription_status ?? 'N/A' }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-muted">Aucun utilisateur trouvé.</td>
+                                        </tr>
+                                    @endforelse
+                                @else
+                                    @forelse($service->clients as $client)
+                                        <tr>
+                                            <td class="ps-4">
+                                                <a href="{{ route('clients.show', $client) }}" class="text-decoration-none fw-semibold">
+                                                    {{ $client->nom_client }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $client->contact }}</td>
+                                            <td class="fw-semibold">{{ $client->pivot->montant ? number_format($client->pivot->montant, 0, ',', ' ') . ' FCFA' : '—' }}</td>
+                                            <td>{{ $client->pivot->date_reabonnement ? \Carbon\Carbon::parse($client->pivot->date_reabonnement)->format('d/m/Y') : '—' }}</td>
+                                            <td>
+                                                @if($client->pivot->a_paye)
+                                                    <span class="badge bg-success">Payé</span>
+                                                @else
+                                                    <span class="badge bg-danger">Impayé</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4 text-muted">Aucun abonné à ce service.</td>
+                                        </tr>
+                                    @endforelse
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -201,32 +274,30 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-anyxtech text-white">
                                 <tr>
-                                    <th class="ps-4">Client</th>
-                                    <th>Contact</th>
-                                    <th>Date d'abonnement</th>
-                                    <th>Montant</th>
+                                    <th class="ps-4">Nom</th>
+                                    <th>Email</th>
+                                    <th>Date d'inscription</th>
+                                    @if(!isset($users))
+                                        <th>Montant</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($service->clients->sortByDesc('pivot.created_at')->take(10) as $client)
+                                @forelse($nouveauxClients as $client)
                                     <tr>
-                                        <td class="ps-4">
-                                            <a href="{{ route('clients.show', $client) }}" class="text-decoration-none fw-semibold">
-                                                {{ $client->nom_client }}
-                                            </a>
-                                        </td>
-                                        <td>{{ $client->contact }}</td>
+                                        <td class="ps-4 fw-semibold">{{ $client->nom ?? $client->nom_client ?? '—' }}</td>
+                                        <td>{{ $client->email ?? $client->contact ?? '—' }}</td>
                                         <td>
                                             <i class="fas fa-calendar-plus text-success me-1"></i>
-                                            {{ $client->pivot->created_at ? $client->pivot->created_at->format('d/m/Y à H:i') : '—' }}
+                                            {{ $client->created_at ? \Carbon\Carbon::parse($client->created_at)->format('d/m/Y à H:i') : '—' }}
                                         </td>
-                                        <td>{{ $client->pivot->montant ? number_format($client->pivot->montant, 0, ',', ' ') . ' FCFA' : '—' }}</td>
+                                        @if(!isset($users))
+                                            <td>{{ isset($client->pivot) && $client->pivot->montant ? number_format($client->pivot->montant, 0, ',', ' ') . ' FCFA' : '—' }}</td>
+                                        @endif
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center py-4 text-muted">
-                                            Aucun inscrit récent.
-                                        </td>
+                                        <td colspan="4" class="text-center py-4 text-muted">Aucun inscrit récent.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -240,31 +311,29 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-anyxtech text-white">
                                 <tr>
-                                    <th class="ps-4">Client</th>
-                                    <th>Contact</th>
-                                    <th>Dernière connexion</th>
+                                    <th class="ps-4">Nom</th>
+                                    <th>Email</th>
+                                    <th>Date connexion</th>
                                     <th>Statut</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($service->clients as $client)
+                                @forelse($dernieresConnexions as $connexion)
                                     @php
-                                        $derniereConnexion = $client->updated_at;
-                                        $joursDepuis = $derniereConnexion ? $derniereConnexion->diffInDays(now()) : null;
+                                        $dateConnexion = $connexion->date_connexion ?? ($connexion->created_at ?? null);
+                                        $joursDepuis = $dateConnexion ? \Carbon\Carbon::parse($dateConnexion)->diffInDays(now()) : null;
                                     @endphp
                                     <tr>
-                                        <td class="ps-4">
-                                            <a href="{{ route('clients.show', $client) }}" class="text-decoration-none fw-semibold">
-                                                {{ $client->nom_client }}
-                                            </a>
-                                        </td>
-                                        <td>{{ $client->contact }}</td>
+                                        <td class="ps-4 fw-semibold">{{ $connexion->nom ?? ($connexion->client->nom_client ?? '—') }}</td>
+                                        <td>{{ $connexion->email ?? ($connexion->client->contact ?? '—') }}</td>
                                         <td>
                                             <i class="fas fa-clock text-info me-1"></i>
-                                            {{ $derniereConnexion ? $derniereConnexion->diffForHumans() : 'Jamais' }}
+                                            {{ $dateConnexion ? \Carbon\Carbon::parse($dateConnexion)->diffForHumans() : 'Jamais' }}
                                         </td>
                                         <td>
-                                            @if($joursDepuis !== null && $joursDepuis <= 7)
+                                            @if(isset($connexion->statut) && $connexion->statut === 'Actif')
+                                                <span class="badge bg-success">Actif</span>
+                                            @elseif($joursDepuis !== null && $joursDepuis <= 7)
                                                 <span class="badge bg-success">Actif</span>
                                             @elseif($joursDepuis !== null && $joursDepuis <= 30)
                                                 <span class="badge bg-warning">Peu actif</span>
@@ -275,9 +344,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center py-4 text-muted">
-                                            Aucune donnée de connexion.
-                                        </td>
+                                        <td colspan="4" class="text-center py-4 text-muted">Aucune connexion enregistrée.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -290,7 +357,7 @@
     </div>
 
     {{-- Ajouter un client (admin) --}}
-    @if(auth()->user()->role === 'admin')
+    @if(auth()->user()->role === 'admin' && !isset($users))
     <div class="card mt-4">
         <div class="card-header bg-white border-0 p-3">
             <h5 class="mb-0 fw-semibold"><i class="fas fa-user-plus me-2 text-anyxtech"></i>Ajouter un client à ce service</h5>
@@ -318,6 +385,34 @@
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-anyxtech w-100">
                         <i class="fas fa-plus me-1"></i>Ajouter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
+
+    {{-- Enregistrer une connexion (admin) --}}
+    @if(auth()->user()->role === 'admin' && !isset($users))
+    <div class="card mt-4">
+        <div class="card-header bg-white border-0 p-3">
+            <h5 class="mb-0 fw-semibold"><i class="fas fa-sign-in-alt me-2 text-anyxtech"></i>Enregistrer une connexion</h5>
+        </div>
+        <div class="card-body p-3 p-md-4">
+            <form action="{{ route('services.connexion', $service) }}" method="POST" class="row g-3 align-items-end">
+                @csrf
+                <div class="col-md-8">
+                    <label class="form-label fw-semibold">Client</label>
+                    <select name="client_id" class="form-select" required>
+                        <option value="">-- Choisir un client --</option>
+                        @foreach($service->clients as $c)
+                            <option value="{{ $c->id }}">{{ $c->nom_client }} — {{ $c->contact }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-anyxtech w-100">
+                        <i class="fas fa-check me-1"></i>Enregistrer connexion
                     </button>
                 </div>
             </form>

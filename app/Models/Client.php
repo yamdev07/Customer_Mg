@@ -59,6 +59,19 @@ class Client extends Model
             ->withTimestamps();
     }
 
+    public function connexions(): HasMany
+    {
+        return $this->hasMany(Connexion::class);
+    }
+
+    public function derniereConnexionPourService(int $serviceId): ?Connexion
+    {
+        return $this->connexions()
+            ->where('service_id', $serviceId)
+            ->latest('date_connexion')
+            ->first();
+    }
+
     /* ──────────────────────────────────────────────
        Scopes
     ────────────────────────────────────────────── */

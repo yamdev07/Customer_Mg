@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Service extends Model
 {
@@ -24,5 +25,15 @@ class Service extends Model
     public function clientsNonPayes(): BelongsToMany
     {
         return $this->clients()->wherePivot('a_paye', false);
+    }
+
+    public function connexions(): HasMany
+    {
+        return $this->hasMany(Connexion::class);
+    }
+
+    public function derniereConnexion()
+    {
+        return $this->connexions()->latest('date_connexion')->first();
     }
 }

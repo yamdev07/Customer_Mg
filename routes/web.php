@@ -53,6 +53,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/services/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
         Route::post('/services/{service}/add-client', [ServiceController::class, 'addClient'])->name('services.addClient');
         Route::delete('/services/{service}/remove-client/{client}', [ServiceController::class, 'removeClient'])->name('services.removeClient');
+        Route::post('/services/{service}/connexion', [ServiceController::class, 'enregistrerConnexion'])->name('services.connexion');
 
         // Route générique en dernier (capture-tout sur un id de client)
         Route::get('/clients/{client}', [ClientCrudController::class, 'show'])->name('clients.show');
